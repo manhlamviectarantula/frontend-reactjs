@@ -68,5 +68,8 @@
   "license": "ISC",
   "devDependencies": {
     "@types/socket.io-client": "^1.4.36"
+  },
+  "engines": {
+    "node": "18.x"
   }
 }
