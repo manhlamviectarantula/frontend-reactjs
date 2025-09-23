@@ -10,7 +10,6 @@ import { Provider } from 'react-redux';
 import { store, persistor } from './redux/store';
 import { PersistGate } from 'redux-persist/integration/react';
 import { BrowserRouter } from 'react-router-dom';
-import 'react-chat-widget/lib/styles.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
