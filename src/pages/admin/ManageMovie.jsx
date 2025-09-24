@@ -28,7 +28,6 @@ const ManageMovie = () => {
     const [Trailer, setTrailer] = useState("")
     const [Rating, setRating] = useState("")
     const [Description, setDescription] = useState("")
-
     const [ImageMovie, setImageMovie] = useState(null);
     const [previewImage, setPreviewImage] = useState(null);
     const isAdmin = store.getState().user.currentUser?.user;

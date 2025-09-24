@@ -206,7 +206,7 @@ const ManageFood = () => {
                                             <TableCell>{new Intl.NumberFormat("vi-VN").format(food.Price)}đ</TableCell>
                                             <TableCell>
                                                 <img
-                                                    src={`${process.env.REACT_APP_API}/${food.Image}`}
+                                                    src={`${food.Image}`}
                                                     alt={food.FoodName}
                                                     style={{ width: "150px", height: "84px", objectFit: "cover", borderRadius: "6px" }}
                                                 />

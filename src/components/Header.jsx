@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button, Container, Form, Modal, Nav, Navbar } from 'react-bootstrap';
 import styled from 'styled-components';
 import { NavLink, useNavigate } from 'react-router-dom';
@@ -50,10 +50,6 @@ const Header = () => {
     const [showForget, setShowForget] = useState(false);
     const [forgetEmail, setForgetEmail] = useState('');
 
-    const handleShowForget = () => {
-        setShowForget(true);
-        setShowLogin(false); // ẩn login khi mở forget
-    };
     const handleCloseForget = () => setShowForget(false);
 
     const handleForgetPassword = async (e) => {
@@ -72,7 +68,6 @@ const Header = () => {
             toast.error(err.response?.data?.error || "Gửi yêu cầu thất bại, vui lòng thử lại.");
         }
     };
-    // ===========================
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -81,20 +76,14 @@ const Header = () => {
             return;
         }
 
-        const loggedInUser = await login(dispatch, { email, password });
-
-        if (loggedInUser) {
+        try {
+            const loggedInUser = await login(dispatch, { email, password });
             handleCloseLogin();
-
-            if (loggedInUser?.AccountTypeID === 3) {
-                navigate('/ad-dashboard');
-            } else if (loggedInUser?.AccountTypeID === 2) {
-                navigate('/branch-ad-dashboard');
-            } else {
-                navigate('/');
-            }
-        } else {
-            toast.error(mesError || "Đăng nhập thất bại!");
+            if (loggedInUser?.AccountTypeID === 3) navigate('/ad-dashboard');
+            else if (loggedInUser?.AccountTypeID === 2) navigate('/branch-ad-dashboard');
+            else navigate('/');
+        } catch (err) {
+            toast.error(err.message);
         }
     };
 

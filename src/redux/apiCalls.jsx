@@ -40,18 +40,17 @@ export const login = async (dispatch, user) => {
     dispatch(loginStart());
     try {
         const res = await axios.post(`${process.env.REACT_APP_API}/auth/login`, user);
-        console.log("🔎 Login response:", res.data);
 
         const { user: userData } = res.data || {};
         if (!userData?.AccountID) throw new Error("Invalid login response: missing AccountID");
 
         dispatch(loginSuccess(res.data));
-        await connectSocket(userData.AccountID, dispatch);   // CHỜ connect xong
+        await connectSocket(userData.AccountID, dispatch);   
         return userData;
     } catch (err) {
         const ErrMes = err?.response?.data?.error || err?.message || "Something went wrong";
         dispatch(loginFailure(ErrMes));
-        console.error("❌ Login error:", ErrMes);
+        throw new Error(ErrMes);
     }
 };
 
