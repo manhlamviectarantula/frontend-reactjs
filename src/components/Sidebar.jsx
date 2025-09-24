@@ -48,7 +48,7 @@ const Sidebar = ({ links }) => {
         <Col md={2} className="bg-light px-0 py-3">
             <div className="d-flex justify-content-between px-3 mb-3">
                 <img
-                    src={`${process.env.REACT_APP_API}/upload/cinema-logo-png_seeklogo-370721.png`}
+                    src={`https://res.cloudinary.com/dnpo0jukc/image/upload/v1758732517/cinema-logo-png_seeklogo-370721_sr9hvg.png`}
                     alt="Cinema logo - homepage"
                     height="40"
                 />

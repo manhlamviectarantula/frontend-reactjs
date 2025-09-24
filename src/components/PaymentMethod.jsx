@@ -3,10 +3,10 @@ import { Form, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 
 const paymentMethods = [
-  { label: "MOMO", value: "MOMO", img: "logomomo.png" },
-  { label: "VNPay", value: "VNPAY", img: "logovnpay.png" },
-  { label: "Zalopay", value: "Zalopay", img: "logozalopay.png" },
-  { label: "ShopeePay", value: "SHOPEEPAY", img: "logoshopeepay.png" },
+  { label: "MOMO", value: "MOMO", img: "https://res.cloudinary.com/dnpo0jukc/image/upload/v1758733095/logomomo_t344kh.png" },
+  { label: "VNPay", value: "VNPAY", img: "https://res.cloudinary.com/dnpo0jukc/image/upload/v1758733101/logovnpay_uliy79.png" },
+  { label: "Zalopay", value: "Zalopay", img: "https://res.cloudinary.com/dnpo0jukc/image/upload/v1758733102/logozalopay_ttfoyi.png" },
+  { label: "ShopeePay", value: "SHOPEEPAY", img: "https://res.cloudinary.com/dnpo0jukc/image/upload/v1758733101/logoshopeepay_hxp2uh.png" },
 ];
 
 const PaymentMethod = ({ selectedMethod, setSelectedMethod, handleCheckout }) => {
@@ -24,7 +24,7 @@ const PaymentMethod = ({ selectedMethod, setSelectedMethod, handleCheckout }) =>
           label={
             <div className="d-flex align-items-center">
               <img
-                src={`${process.env.REACT_APP_API}/upload/${method.img}`}
+                src={`${method.img}`}
                 alt={method.label}
                 style={{ width: 30, marginRight: 10 }}
               />

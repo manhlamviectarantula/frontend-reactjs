@@ -93,7 +93,7 @@ const History = () => {
                                             <Col md={3} className="text-end text-center">
                                                 <Card.Img
                                                     variant="top"
-                                                    src={`${process.env.REACT_APP_API}/upload/sampleQR_history.png`}
+                                                    src={`https://res.cloudinary.com/dnpo0jukc/image/upload/v1758733102/sampleQR_history_uco7wy.png`}
                                                     style={{ width: "100%", marginBottom: "5px" }}
                                                 />
                                                 <div>Vui lòng đưa mã qr cho nhân viên</div>

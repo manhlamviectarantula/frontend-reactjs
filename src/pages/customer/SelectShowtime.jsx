@@ -64,7 +64,7 @@ const SelectShowtime = () => {
             </div>
             <Card.Img
               variant="top"
-              src={`${process.env.REACT_APP_API}/${Poster}`}
+              src={`${Poster}`}
               className="w-100 rounded"
             />
           </Col>

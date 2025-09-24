@@ -70,7 +70,7 @@ const SelectFood = () => {
                                 {foodData.map((food, index) => (
                                     <Row key={food.FoodID} className="mb-3">
                                         <Col md={4}>
-                                            <img src={`${process.env.REACT_APP_API}/${food.Image}`}
+                                            <img src={`${food.Image}`}
                                                 alt='ok' style={{ width: '100%', marginBottom: "10px" }} />
                                         </Col>
                                         <Col md={5}>
@@ -93,7 +93,7 @@ const SelectFood = () => {
                                 <div className='d-flex gap-3 py-3' style={{ borderBottom: "1px solid black" }}>
                                     <Card.Img
                                         variant="top"
-                                        src={`${process.env.REACT_APP_API}/${ShowtimeInfoDisplay?.Poster}`}
+                                        src={`${ShowtimeInfoDisplay?.Poster}`}
                                         style={{ width: "30%" }}
                                     />
                                     <div>

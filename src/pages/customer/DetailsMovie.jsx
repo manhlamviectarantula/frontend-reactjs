@@ -46,7 +46,7 @@ const DetailsMovie = () => {
                     <Col md={3}>
                         <Card.Img
                             variant="top"
-                            src={`${process.env.REACT_APP_API}/${movie.Poster}`}
+                            src={`${movie.Poster}`}
                             alt={movie.MovieName}
                             className="w-100 rounded"
                         />

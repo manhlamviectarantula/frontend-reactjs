@@ -215,7 +215,7 @@ const ManageBranch = () => {
                             <p><strong>Địa chỉ:</strong> {selectedBranch.Address}</p>
                             <p className='mb-1'><strong>Hình ảnh:</strong> </p>
                             <Image
-                                src={`${process.env.REACT_APP_API}/${selectedBranch.ImageURL}`}
+                                src={`${selectedBranch.ImageURL}`}
                                 width="100%"
                                 alt="Ảnh chi nhánh"
                                 rounded

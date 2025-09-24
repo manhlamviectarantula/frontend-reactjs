@@ -390,7 +390,7 @@ const ManageShowtime = () => {
                                                             <Box key={idx} sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                                                                 {/* Poster */}
                                                                 <img
-                                                                    src={`${process.env.REACT_APP_API}/${showtime.Poster}`}
+                                                                    src={`${showtime.Poster}`}
                                                                     alt="poster"
                                                                     style={{
                                                                         width: "50px",
@@ -621,7 +621,7 @@ const ManageShowtime = () => {
                                 <p><strong>Phim chiếu:</strong> {DetailsShowtime.Movie.MovieName}</p>
                                 <p>
                                     <Image
-                                        src={`${process.env.REACT_APP_API}/${DetailsShowtime.Movie.Poster}`}
+                                        src={`${DetailsShowtime.Movie.Poster}`}
                                         width="30%"
                                         rounded
                                     />

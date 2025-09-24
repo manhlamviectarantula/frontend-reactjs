@@ -237,7 +237,7 @@ const SelectSeat = () => {
                                 <div>Thời lượng: {ShowtimeInfo?.Duration} phút</div>
                                 <Card.Img
                                     variant="top"
-                                    src={`${process.env.REACT_APP_API}/${ShowtimeInfo?.Poster}`}
+                                    src={`${ShowtimeInfo?.Poster}`}
                                     className="w-100 rounded mt-1"
                                 />
                             </div>

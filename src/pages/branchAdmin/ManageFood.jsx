@@ -270,7 +270,7 @@ const ManageFood = () => {
                             <div className="mb-2">
                                 {previewImage || selectedFood?.Image ? (
                                     <Image
-                                        src={previewImage || `${process.env.REACT_APP_API}/${selectedFood?.Image}`}
+                                        src={previewImage || `${selectedFood?.Image}`}
                                         width="50%"
                                         alt="Ảnh món ăn"
                                         rounded

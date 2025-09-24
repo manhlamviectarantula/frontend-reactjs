@@ -43,7 +43,7 @@ const Showing = () => {
               <Card className="h-100" style={{ cursor: 'pointer' }} onClick={() => handleCardClick(movie.MovieID)}>
                 <Card.Img
                   variant="top"
-                  src={`${process.env.REACT_APP_API}/${movie.Poster}`}
+                  src={`${movie.Poster}`}
                   alt={movie.MovieName}
                   style={{  objectFit: 'cover' }}
                 />
