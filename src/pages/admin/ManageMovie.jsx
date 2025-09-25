@@ -46,10 +46,10 @@ const ManageMovie = () => {
             try {
                 const response = await axios.get(`${process.env.REACT_APP_API}/movie/get-all-movie`,
                     {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
                 );
                 const movieData = response.data.movies || [];
                 setMovies(movieData);
@@ -275,8 +275,21 @@ const ManageMovie = () => {
                                                 <TableCell>{movie.MovieID}</TableCell>
                                                 <TableCell>{movie.MovieName}</TableCell>
                                                 <TableCell>{movie.AgeTag}</TableCell>
-                                                <TableCell sx={{ color: movie.Status === 1 ? 'green' : '#212529' }}>
-                                                    {movie.Status === 1 ? 'Phim đang chiếu' : 'Phim sắp chiếu'}
+                                                <TableCell
+                                                    sx={{
+                                                        color:
+                                                            movie.Status === 1
+                                                                ? 'green'       // đang chiếu
+                                                                : movie.Status === 0
+                                                                    ? '#212529'     // sắp chiếu
+                                                                    : 'red',        // kết thúc công chiếu
+                                                    }}
+                                                >
+                                                    {movie.Status === 1
+                                                        ? 'Phim đang chiếu'
+                                                        : movie.Status === 0
+                                                            ? 'Phim sắp chiếu'
+                                                            : 'Kết thúc công chiếu'}
                                                 </TableCell>
                                                 <TableCell>{formatDate(movie.ReleaseDate)}</TableCell>
                                                 <TableCell align="center">
@@ -472,18 +485,6 @@ const ManageMovie = () => {
                         </Form.Group>
 
                         <Form.Group className="mb-3">
-                            <Form.Label><strong>Trạng thái phim:</strong></Form.Label>
-                            <Form.Select
-                                value={String(selectedMovie?.Status) || ''}
-                                onChange={(e) => setSelectedMovie(prev => ({ ...prev, Status: e.target.value }))}
-                                required
-                            >
-                                <option value="1">Phim đang chiếu</option>
-                                <option value="0">Phim sắp chiếu</option>
-                            </Form.Select>
-                        </Form.Group>
-
-                        <Form.Group className="mb-3">
                             <Form.Label><strong>Tuổi được xem:</strong></Form.Label>
                             <Form.Select
                                 value={selectedMovie?.AgeTag || ''}
@@ -553,7 +554,7 @@ const ManageMovie = () => {
                             <div className="mb-2">
                                 {previewImage || selectedMovie?.Poster ? (
                                     <Image
-                                        src={previewImage || `${process.env.REACT_APP_API}/${selectedMovie?.Poster}`}
+                                        src={previewImage || `${selectedMovie?.Poster}`}
                                         width="30%"
                                         alt="Ảnh xem trước"
                                         rounded
@@ -583,6 +584,26 @@ const ManageMovie = () => {
                                 value={selectedMovie?.Description || ''}
                                 onChange={(e) => setSelectedMovie(prev => ({ ...prev, Description: e.target.value }))}
                                 required
+                            />
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label><strong>Người sửa cuối :</strong></Form.Label>
+                            <Form.Control
+                                as="textarea"
+                                rows={3}
+                                value={selectedMovie?.LastUpdatedBy || ''}
+                                readOnly
+                            />
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label><strong>Lần sửa cuối:</strong></Form.Label>
+                            <Form.Control
+                                as="textarea"
+                                rows={3}
+                                value={selectedMovie?.LastUpdatedAt || ''}
+                                readOnly
                             />
                         </Form.Group>
 

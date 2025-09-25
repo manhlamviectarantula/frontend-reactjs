@@ -228,7 +228,7 @@ const Checkout = () => {
                         <Form.Group className="mb-3 text-center" controlId="formBasicEmail">
                             <Form.Control type="text" onChange={(e) => setOTP(e.target.value)} placeholder="Nhập mã OTP..." />
                             <Form.Text className="text-muted">
-                                Nếu chưa nhận được mã OTP, vui lòng kiểm tra lại địa chỉ gmail bạn đã cung cấp
+                                Nếu chưa nhận được mã OTP, vui lòng kiểm tra lại địa chỉ Gmail đã cung cấp hoặc kiểm tra 'Thư rác' của Gmail
                             </Form.Text>
                         </Form.Group>
 
