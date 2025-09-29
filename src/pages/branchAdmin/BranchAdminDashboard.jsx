@@ -63,7 +63,7 @@ const BranchAdminDashboard = () => {
                 <Row style={{ height: '100%' }}>
                     <Sidebar links={SidebarBranchAdmin} />
                     <Col md={10} className="p-4 position-relative">
-                        <div className='text-center mb-2'>
+                        <div className='text-center mb-3'>
                             <h3>Chi nhánh {BranchName}</h3>
                         </div>
                         <Slider className='rounded-1 shadow mb-4 p-2' style={{ background: '#f0f0f0' }} {...sliderSettings}>

@@ -7,7 +7,7 @@ const Features = () => {
 	return (
 		<div className='w-100' style={{ margin: '50px 0' }}>
 			<div className="text-center">
-				<h4 style={{ borderTop: '3px dashed black', borderBottom: '3px dashed black', padding: '5px 0' }}>VỀ CHÚNG TÔI</h4>
+				<h4 style={{ borderTop: '3px dashed black', borderBottom: '3px dashed black', padding: '5px 0' }}>VỀ CHÚNG TÔI 1</h4>
 			</div>
 			<section class="features-area section_gap" style={{ padding: '40px' }}>
 				<div class="container">
