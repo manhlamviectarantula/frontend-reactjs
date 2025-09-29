@@ -10,8 +10,10 @@ import "react-datepicker/dist/react-datepicker.css";
 import { toast, ToastContainer } from 'react-toastify';
 import BranchesDrawer from '../admin/AdminDrawer.jsx/BranchesDrawer';
 import FoodDrawer from './BranchAdminDrawer/FoodsDrawer';
+import { store } from '../../redux/store';
 
 const BranchAdminDashboard = () => {
+    const BranchName = store.getState().user.currentUser.user.BranchName
     const [showDrawer, setShowDrawer] = useState(false);
     const [selectedCardKey, setSelectedCardKey] = useState(null);
 
@@ -61,31 +63,29 @@ const BranchAdminDashboard = () => {
                 <Row style={{ height: '100%' }}>
                     <Sidebar links={SidebarBranchAdmin} />
                     <Col md={10} className="p-4 position-relative">
-                        <Row className="rounded-1 shadow mb-4" style={{ background: '#f0f0f0' }}>
-                            <Col className="p-2">
-                                <Slider {...sliderSettings}>
-                                    {Object.entries(cardMap).map(([key, { title, color, icon }]) => (
-                                        <div key={key}>
-                                            <Card
-                                                className="mx-2 stat-card"
-                                                onClick={() => handleCardClick(key)}
-                                                style={{
-                                                    borderRadius: '12px',
-                                                    textAlign: 'center',
-                                                    backgroundColor: color,
-                                                    color: 'white'
-                                                }}>
-                                                <Card.Body>
-                                                    <div className="d-flex justify-content-center mb-2">{icon}</div>
-                                                    <h6 className="mb-2">{title}</h6>
-                                                </Card.Body>
-                                            </Card>
-                                        </div>
-                                    ))}
-                                </Slider>
-                            </Col>
-                        </Row>
-
+                        <div className='text-center mb-2'>
+                            <h3>Chi nhánh {BranchName}</h3>
+                        </div>
+                        <Slider className='rounded-1 shadow mb-4 p-2' style={{ background: '#f0f0f0' }} {...sliderSettings}>
+                            {Object.entries(cardMap).map(([key, { title, color, icon }]) => (
+                                <div key={key}>
+                                    <Card
+                                        className="mx-2 stat-card"
+                                        onClick={() => handleCardClick(key)}
+                                        style={{
+                                            borderRadius: '12px',
+                                            textAlign: 'center',
+                                            backgroundColor: color,
+                                            color: 'white'
+                                        }}>
+                                        <Card.Body>
+                                            <div className="d-flex justify-content-center mb-2">{icon}</div>
+                                            <h6 className="mb-2">{title}</h6>
+                                        </Card.Body>
+                                    </Card>
+                                </div>
+                            ))}
+                        </Slider>
                         <RevenueAndAgeChart />
                     </Col>
                 </Row>

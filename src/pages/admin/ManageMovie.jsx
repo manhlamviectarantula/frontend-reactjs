@@ -100,6 +100,8 @@ const ManageMovie = () => {
             return;
         }
 
+        setShowAddModal(false);
+
         const formData = new FormData();
         formData.append("MovieName", MovieName);
         formData.append("Slug", Slug);
@@ -140,7 +142,6 @@ const ManageMovie = () => {
             setDescription("");
             setImageMovie(null);
             setPreviewImage(null);
-            setShowAddModal(false);
 
             // Cập nhật danh sách chi nhánh
             const response = await axios.get(`${process.env.REACT_APP_API}/movie/get-all-movie`,
@@ -590,8 +591,7 @@ const ManageMovie = () => {
                         <Form.Group className="mb-3">
                             <Form.Label><strong>Người sửa cuối :</strong></Form.Label>
                             <Form.Control
-                                as="textarea"
-                                rows={3}
+                                as="text"
                                 value={selectedMovie?.LastUpdatedBy || ''}
                                 readOnly
                             />
@@ -600,8 +600,7 @@ const ManageMovie = () => {
                         <Form.Group className="mb-3">
                             <Form.Label><strong>Lần sửa cuối:</strong></Form.Label>
                             <Form.Control
-                                as="textarea"
-                                rows={3}
+                                as="text"
                                 value={selectedMovie?.LastUpdatedAt || ''}
                                 readOnly
                             />

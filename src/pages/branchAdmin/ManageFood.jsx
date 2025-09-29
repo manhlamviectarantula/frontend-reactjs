@@ -3,13 +3,13 @@ import { Button, Col, Container, Row, Modal, Form, Image } from 'react-bootstrap
 import Sidebar from '../../components/Sidebar';
 import SidebarBranchAdmin from './sidebarBranchAdmin';
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import { store } from '../../redux/store';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from '@mui/material';
 import { useSelector } from 'react-redux';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 const ManageFood = () => {
     const user = useSelector((state) => state.user.currentUser)
@@ -35,7 +35,12 @@ const ManageFood = () => {
         const getFoods = async () => {
             try {
                 const response = await axios.get(
-                    `${process.env.REACT_APP_API}/food/get-foods-of-branch/${isBranchAdmin.BranchID}`
+                    `${process.env.REACT_APP_API}/food/get-foods-of-branch/${isBranchAdmin.BranchID}`,
+                    {
+                        headers: {
+                            "Authorization": `Bearer ${token}`
+                        }
+                    }
                 );
                 setFoods(response.data || []);
             } catch (error) {
@@ -133,7 +138,12 @@ const ManageFood = () => {
             await axios.put(
                 `${process.env.REACT_APP_API}/food/update-food-of-branch/${selectedFood.FoodID}`,
                 formData,
-                { headers: { "Content-Type": "multipart/form-data" } }
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        "Authorization": `Bearer ${token}`
+                    }
+                }
             );
 
             toast.success("Cập nhật món ăn thành công!");
@@ -174,6 +184,39 @@ const ManageFood = () => {
         }
     };
 
+    const handleChangeStatus = async (e, food) => {
+        e.preventDefault();
+
+        try {
+            // Gọi API đổi trạng thái
+            await axios.put(
+                `${process.env.REACT_APP_API}/food/change-food-status/${food.FoodID}`,
+                {},
+                {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                }
+            );
+
+            toast.success("Đã đổi trạng thái món ăn thành công!");
+
+            // Cập nhật trực tiếp trạng thái trên state mà không fetch lại toàn bộ
+            setFoods((prevFoods) =>
+                prevFoods.map((f) =>
+                    f.FoodID === food.FoodID
+                        ? { ...f, Status: f.Status === 1 ? 0 : 1 }
+                        : f
+                )
+            );
+        } catch (error) {
+            console.error("Error toggling food status:", error);
+            toast.error(
+                error.response?.data?.error || "Có lỗi xảy ra khi đổi trạng thái món ăn."
+            );
+        }
+    };
+
     return (
         <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
             <Container fluid style={{ flex: 1 }}>
@@ -194,6 +237,7 @@ const ManageFood = () => {
                                         <TableCell sx={{ color: "white" }}><b>Giá</b></TableCell>
                                         <TableCell sx={{ color: "white" }}><b>Hình ảnh</b></TableCell>
                                         <TableCell sx={{ color: "white" }}><b>Mô tả</b></TableCell>
+                                        <TableCell sx={{ color: "white" }}><b>Trạng thái</b></TableCell>
                                         <TableCell sx={{ color: "white" }} align="center" colSpan={2}><b>Tùy chỉnh</b></TableCell>
                                     </TableRow>
                                 </TableHead>
@@ -212,6 +256,9 @@ const ManageFood = () => {
                                                 />
                                             </TableCell>
                                             <TableCell>{food.Description}</TableCell>
+                                            <TableCell sx={{ color: food.Status ? "green" : "red" }}>
+                                                {food.Status ? "Mở bán" : "Bị ẩn"}
+                                            </TableCell>
                                             <TableCell align="center">
                                                 <Tooltip title="Sửa">
                                                     <IconButton color="primary" onClick={() => handleEditClick(food)}>
@@ -220,9 +267,16 @@ const ManageFood = () => {
                                                 </Tooltip>
                                             </TableCell>
                                             <TableCell align="center">
-                                                <Tooltip title="Xóa">
-                                                    <IconButton color="error" onClick={() => handleDeleteClick(food)}>
-                                                        <DeleteIcon fontSize="small" />
+                                                <Tooltip title={food.Status ? "Ẩn thức ăn" : "Hiện thức ăn"}>
+                                                    <IconButton
+                                                        color={food.Status ? "error" : "success"}
+                                                        onClick={(e) => handleChangeStatus(e, food)}
+                                                    >
+                                                        {food.Status ? (
+                                                            <VisibilityOff fontSize="small" />
+                                                        ) : (
+                                                            <Visibility fontSize="small" />
+                                                        )}
                                                     </IconButton>
                                                 </Tooltip>
                                             </TableCell>

@@ -19,7 +19,7 @@ const SelectFood = () => {
     useEffect(() => {
         const getFoods = async () => {
             try {
-                const res = await axios.get(`${process.env.REACT_APP_API}/food/get-foods-of-branch/${ShowtimeInfoDisplay.BranchID}`);
+                const res = await axios.get(`${process.env.REACT_APP_API}/food/get-foods-to-order/${ShowtimeInfoDisplay.BranchID}`);
                 setFoodData(res.data);
             } catch (error) {
                 console.error('Error fetching product:', error);

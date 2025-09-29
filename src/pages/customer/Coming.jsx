@@ -1,16 +1,31 @@
 import { Container, Row, Col, Card, Badge } from 'react-bootstrap';
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
-
-const movies = [
-  { id: 1, name: 'Venom: Kèo Cuối', tag: '18+', image: 'https://cdn.galaxycine.vn/media/2024/10/16/venom-sneak-500_1729048419589.jpg' },
-  { id: 2, name: 'Bức Họa Bí Ẩn', tag: '13+', image: 'https://cdn.galaxycine.vn/media/2023/10/17/the-painting-2_1697549479373.jpg' },
-  { id: 3, name: 'Ác Quỷ Truy Hồn', tag: '18+', image: 'https://cdn.galaxycine.vn/media/2024/10/11/ac-qu-truy-hon-500_1728616391060.jpg' },
-  { id: 4, name: 'Trò Chơi Nhân Tính', tag: '18+', image: 'https://cdn.galaxycine.vn/media/2024/10/8/exit-500_1728383239694.jpg' },
-  { id: 5, name: 'Elli Và Bí Ẩn Chiếc Tàu Ma', tag: 'P', image: 'https://cdn.galaxycine.vn/media/2024/9/20/ellie-500_1726817040129.jpg' },
-];
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Coming = () => {
+  const [movies, setMovies] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_API}/movie/get-upcoming-movie`);
+        setMovies(response.data.data);
+      } catch (error) {
+        console.error('Lỗi khi lấy danh sách phim:', error);
+      }
+    };
+
+    fetchMovies();
+  }, []);
+
+  const handleCardClick = (MovieID) => {
+    navigate(`/detailsMovie/${MovieID}`);
+  };
+
   return (
     <>
       <Header />
@@ -25,18 +40,18 @@ const Coming = () => {
         <Row xs={1} sm={2} md={3} lg={4} className="g-4">
           {movies.map((movie) => (
             <Col key={movie.id}>
-              <Card className="h-100">
+              <Card className="h-100" style={{ cursor: 'pointer' }} onClick={() => handleCardClick(movie.MovieID)}>
                 <Card.Img
                   variant="top"
-                  src={movie.image}
-                  alt={movie.name}
-                  style={{  objectFit: 'cover' }}
+                  src={`${movie.Poster}`}
+                  alt={movie.MovieName}
+                  style={{ objectFit: 'cover' }}
                 />
                 <Card.Body>
-                  <Card.Title>{movie.name}</Card.Title>
+                  <Card.Title>{movie.MovieName}</Card.Title>
                 </Card.Body>
                 <Badge bg="danger" className="position-absolute">
-                  {movie.tag}
+                  {movie.AgeTag}
                 </Badge>
               </Card>
             </Col>
