@@ -378,10 +378,23 @@ const ManageShowtime = () => {
                                                         verticalAlign: "middle",
                                                         textAlign: "center",
                                                         fontWeight: "bold",
+                                                        color: theater.Status ? "inherit" : "red"
                                                     }}
                                                 >
                                                     {theater.TheaterName}
+                                                    {!theater.Status && " đang khóa"}
                                                 </TableCell>
+
+                                                {/* <TableCell
+                                                    sx={{
+                                                        whiteSpace: "nowrap",
+                                                        verticalAlign: "middle",
+                                                        textAlign: "center",
+                                                        fontWeight: "bold",
+                                                    }}
+                                                >
+                                                    {theater.TheaterName}
+                                                </TableCell> */}
 
                                                 {/* Cột suất chiếu */}
                                                 <TableCell sx={{ display: "flex", flexWrap: "wrap", gap: 1, p: 2 }}>

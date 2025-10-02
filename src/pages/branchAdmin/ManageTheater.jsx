@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { toast, ToastContainer } from 'react-toastify';
 import { formatBranchSlug, formatDatetime, removeVietnameseTones } from '../../lib/utils';
 import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from '@mui/material';
-import { KeyboardDoubleArrowRight } from '@mui/icons-material';
+import { KeyboardDoubleArrowRight, Lock, LockOpen } from '@mui/icons-material';
 
 const ManageTheater = () => {
     const user = useSelector((state) => state.user.currentUser)
@@ -229,7 +229,7 @@ const ManageTheater = () => {
 
     const createTheaterAndSeats = async () => {
         try {
-            const theaterResponse = await axios.post(`${process.env.REACT_APP_API}/theater/add-theater`, theaterInfo, 
+            const theaterResponse = await axios.post(`${process.env.REACT_APP_API}/theater/add-theater`, theaterInfo,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -296,6 +296,38 @@ const ManageTheater = () => {
         }
     };
 
+    const handleChangeStatus = async (e, Theater) => {
+        e.preventDefault();
+
+        try {
+            // Gọi API đổi trạng thái
+            await axios.put(
+                `${process.env.REACT_APP_API}/theater/change-theater-status/${Theater.TheaterID}`,
+                {},
+                {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                }
+            );
+
+            toast.success("Đã đổi trạng thái rạp chiếu thành công!");
+
+            setTheaters((prevTheaters) =>
+                prevTheaters.map((t) =>
+                    t.TheaterID === Theater.TheaterID
+                        ? { ...t, Status: t.Status === true ? false : true }
+                        : t
+                )
+            );
+        } catch (error) {
+            console.error("Error toggling theater status:", error);
+            toast.error(
+                error.response?.data?.error || "Có lỗi xảy ra khi đổi trạng thái rạp chiếu."
+            );
+        }
+    };
+
     useEffect(() => {
         if (theaterInfo.TheaterName) {
             const theaterSlug = removeVietnameseTones(theaterInfo.TheaterName.toLowerCase());
@@ -323,14 +355,15 @@ const ManageTheater = () => {
                                 </Button>
                             </div>
                         </div>
-                        <TableContainer component={Paper} elevation={3}>
+                        <TableContainer component={Paper} elevation={4}>
                             <Table size='small' aria-label='Danh sách rạp chiếu' sx={{ borderColapse: 'collapse' }}>
                                 <TableHead>
                                     <TableRow sx={{ backgroundColor: '#2c3034' }}>
                                         <TableCell sx={{ color: 'white' }}><b>ID</b></TableCell>
                                         <TableCell sx={{ color: 'white' }}><b>Tên rạp</b></TableCell>
                                         <TableCell sx={{ color: 'white' }}><b>Loại rạp</b></TableCell>
-                                        <TableCell sx={{ color: 'white' }} align="center" colSpan={1}><b>Tùy chỉnh</b></TableCell>
+                                        <TableCell sx={{ color: 'white' }}><b>Trạng thái</b></TableCell>
+                                        <TableCell sx={{ color: 'white' }} align="center" colSpan={2}><b>Tùy chỉnh</b></TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -339,10 +372,27 @@ const ManageTheater = () => {
                                             <TableCell>{Theater.TheaterID}</TableCell>
                                             <TableCell>{Theater.TheaterName}</TableCell>
                                             <TableCell>{Theater.TheaterType}</TableCell>
+                                            <TableCell sx={{ color: Theater.Status ? "green" : "red" }}>
+                                                {Theater.Status ? "Hoạt động" : "Đang khóa"}
+                                            </TableCell>
                                             <TableCell align="center">
                                                 <Tooltip title="Xem chi tiết">
                                                     <IconButton color="primary" onClick={() => ShowDetailsTheater(Theater.TheaterID)}>
                                                         <KeyboardDoubleArrowRight fontSize="small" />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                <Tooltip title={Theater.Status ? "Khóa rạp" : "Mở rạp"}>
+                                                    <IconButton
+                                                        color={Theater.Status ? "error" : "success"}
+                                                        onClick={(e) => handleChangeStatus(e, Theater)}
+                                                    >
+                                                        {Theater.Status ? (
+                                                            <Lock fontSize="small" />
+                                                        ) : (
+                                                            <LockOpen fontSize="small" />
+                                                        )}
                                                     </IconButton>
                                                 </Tooltip>
                                             </TableCell>
