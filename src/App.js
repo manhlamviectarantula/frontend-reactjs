@@ -32,6 +32,8 @@ import { useEffect } from 'react';
 import { loginSuccess } from './redux/userRedux';
 import HoldSeats from './components/HoldSeats';
 import ChatBot from './pages/customer/ChatBot';
+import Actor from './pages/customer/Actor';
+import Director from './pages/customer/Director';
 
 
 function App() {
@@ -97,6 +99,9 @@ function App() {
           <Route path="/selectSeat/:ShowtimeID" element={<SelectSeat />} ></Route>
           <Route path="/checkout" element={<Checkout />} ></Route>
           <Route path="/chat" element={<ChatBox />} />
+          <Route path="/actor" element={<Actor />} />
+          <Route path="/director" element={<Director />} />
+
           <Route path="/momo/result" element={<MomoResult />} />
         </>
 

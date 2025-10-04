@@ -200,7 +200,7 @@ const ManageMovie = () => {
                                             <TableCell>{movie.MovieName}</TableCell>
                                             <TableCell>{movie.AgeTag}</TableCell>
                                             <TableCell sx={{ color: movie.Status === 1 ? 'green' : movie.Status === 0 ? '#212529' : 'red' }}>
-                                                {movie.Status === 1 ? 'Phim đang chiếu' : movie.Status === 0 ? 'Phim sắp chiếu' : 'Kết thúc'}
+                                                {movie.Status === 1 ? 'Phim đang chiếu' : movie.Status === 0 ? 'Phim sắp chiếu' : 'Kết thúc chiếu'}
                                             </TableCell>
                                             <TableCell>{formatDate(movie.ReleaseDate)}</TableCell>
                                             <TableCell align="center">
