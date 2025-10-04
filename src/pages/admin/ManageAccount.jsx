@@ -127,7 +127,7 @@ const ManageAccount = () => {
         if (!selectedAccount || !selectedBranch) return;
         setLoading(true);
         try {
-            await axios.put(`${process.env.REACT_APP_API}/account/upgrade-account/${selectedAccount.AccountID}`, {
+            await axios.put(`${process.env.REACT_APP_API}/account/upgrade-account`, {
                 AccountID: selectedAccount.AccountID,
                 BranchID: parseInt(selectedBranch),
                 AccountTypeID: selectedAccountType,
