@@ -79,33 +79,45 @@ const Checkout = () => {
     };
 
     const proceedCheckout = async () => {
-        const totalPrice = calculateTotalPrice();
+        try {
+            const totalPrice = calculateTotalPrice();
 
-        const fullOrderData = {
-            order: {
-                AccountID: userid || null,
-                ShowtimeID: ShowtimeInfoOrder.ShowtimeID,
-                Email: userid ? null : emailOTPchecked,
-                Total: totalPrice,
-                Point: totalPrice
-            },
-            orderFoods: orderFoods.map(f => ({
-                FoodID: f.FoodID,
-                Quantity: f.quantity,
-                TotalPrice: f.TotalPrice
-            })),
-            showtimeSeatUpdates: getShowtimeSeatIDData()
-        };
+            const fullOrderData = {
+                order: {
+                    AccountID: userid || null,
+                    ShowtimeID: ShowtimeInfoOrder.ShowtimeID,
+                    Email: userid ? null : emailOTPchecked,
+                    Total: totalPrice,
+                    Point: totalPrice,
+                },
+                orderFoods: orderFoods.map((f) => ({
+                    FoodID: f.FoodID,
+                    Quantity: f.quantity,
+                    TotalPrice: f.TotalPrice,
+                })),
+                showtimeSeatUpdates: getShowtimeSeatIDData(),
+            };
 
-        const res = await axios.post(
-            `${process.env.REACT_APP_API}/order/create-payment`,
-            fullOrderData
-        );
+            const res = await axios.post(
+                `${process.env.REACT_APP_API}/order/create-payment`,
+                fullOrderData
+            );
 
-        const payUrl = res.data.payUrl;
-        window.location.href = payUrl;
+            const payUrl = res.data.payUrl;
+            window.location.href = payUrl;
+
+        } catch (err) {
+            console.error("Lỗi thanh toán:", err);
+
+            // Nếu backend trả lỗi dạng { error: "..." }
+            if (err.response?.data?.error) {
+                toast.error(err.response.data.error);
+            } else {
+                toast.error("Có lỗi xảy ra khi tạo thanh toán. Vui lòng thử lại!");
+            }
+        }
     };
-
+    
     const [selectedMethod, setSelectedMethod] = useState('');
 
     return (
