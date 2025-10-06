@@ -195,7 +195,7 @@ const Account = () => {
             <Modal show={showChangePassword} onHide={handleCloseChangePassword} centered>
                 <Modal.Header closeButton>
                     <img
-                        src={`https://res.cloudinary.com/dnpo0jukc/image/upload/v1758732517/cinema-logo-png_seeklogo-370721_sr9hvg.png`}
+                        src={`https://res.cloudinary.com/dnpo0jukc/image/upload/v1759719075/Designer-Photoroom_rrk4es.png`}
                         alt="Cinema logo - homepage"
                         height="40"
                     />

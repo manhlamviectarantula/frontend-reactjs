@@ -154,7 +154,7 @@ const Header = () => {
                 <Container>
                     <CustomNavbar.Brand as={NavLink} to="/">
                         <img
-                            src={`https://res.cloudinary.com/dnpo0jukc/image/upload/v1758732517/cinema-logo-png_seeklogo-370721_sr9hvg.png`}
+                            src={`https://res.cloudinary.com/dnpo0jukc/image/upload/v1759719075/Designer-Photoroom_rrk4es.png`}
                             alt="Cinema logo - homepage"
                             height="40"
                         />
@@ -178,7 +178,7 @@ const Header = () => {
             <Modal show={showLogin} onHide={handleCloseLogin} centered>
                 <Modal.Header closeButton>
                     <img
-                        src={`https://res.cloudinary.com/dnpo0jukc/image/upload/v1758732517/cinema-logo-png_seeklogo-370721_sr9hvg.png`}
+                        src={`https://res.cloudinary.com/dnpo0jukc/image/upload/v1759719075/Designer-Photoroom_rrk4es.png`}
                         alt="Cinema logo - homepage"
                         height="40"
                     />
@@ -260,7 +260,7 @@ const Header = () => {
             <Modal show={showRegister} onHide={handleCloseRegister} centered>
                 <Modal.Header closeButton>
                     <img
-                        src={`https://res.cloudinary.com/dnpo0jukc/image/upload/v1758732517/cinema-logo-png_seeklogo-370721_sr9hvg.png`}
+                        src={`https://res.cloudinary.com/dnpo0jukc/image/upload/v1759719075/Designer-Photoroom_rrk4es.png`}
                         alt="Cinema logo - homepage"
                         height="40"
                     />
