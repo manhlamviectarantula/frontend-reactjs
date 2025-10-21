@@ -77,11 +77,8 @@ const Header = () => {
         }
 
         try {
-            const loggedInUser = await login(dispatch, { email, password });
+            await login(dispatch, { email, password });
             handleCloseLogin();
-            if (loggedInUser?.AccountTypeID === 3) navigate('/ad-dashboard');
-            else if (loggedInUser?.AccountTypeID === 2) navigate('/branch-ad-dashboard');
-            else navigate('/');
         } catch (err) {
             toast.error(err.message);
         }
@@ -197,15 +194,22 @@ const Header = () => {
                         </Form.Group>
 
                         <Button variant="dark" disabled={isFetching} onClick={handleLogin} type="submit" className="w-100 mb-2 d-flex justify-content-center align-items-center">
-                            {isFetching ? <CircularProgress color="inherit" size={24} /> : 'Đăng nhập'}
+                            {/* {isFetching ? <CircularProgress color="inherit" size={24} /> : 'Đăng nhập'} */}
+                            Đăng nhập
                         </Button>
 
                         <div className='d-flex justify-content-center align-items-center gap-2'>
                             <span>hoặc đăng nhập với:</span>
-                            <Button variant="primary" disabled={isFetching} onClick={handleLoginFB} className="d-flex justify-content-center align-items-center px-2">
+                            {/* <Button variant="primary" disabled={isFetching} onClick={handleLoginFB} className="d-flex justify-content-center align-items-center px-2">
                                 <FacebookIcon fontSize="small" />
                             </Button>
                             <Button variant="outline-danger" disabled={isFetching} onClick={handleLoginGoogle} className="d-flex justify-content-center align-items-center px-2">
+                                <GoogleIcon fontSize="small" />
+                            </Button> */}
+                            <Button variant="primary" onClick={handleLoginFB} className="d-flex justify-content-center align-items-center px-2">
+                                <FacebookIcon fontSize="small" />
+                            </Button>
+                            <Button variant="outline-danger" onClick={handleLoginGoogle} className="d-flex justify-content-center align-items-center px-2">
                                 <GoogleIcon fontSize="small" />
                             </Button>
                         </div>

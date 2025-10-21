@@ -44,8 +44,13 @@ export const login = async (dispatch, user) => {
         const { user: userData } = res.data || {};
         if (!userData?.AccountID) throw new Error("Invalid login response: missing AccountID");
 
+        if (userData?.AccountTypeID === 3) navigate('/ad-dashboard');
+        else if (userData?.AccountTypeID === 2) navigate('/branch-ad-dashboard');
+        else navigate('/');
+
         dispatch(loginSuccess(res.data));
-        await connectSocket(userData.AccountID, dispatch);   
+        await connectSocket(userData.AccountID, dispatch);  
+
         return userData;
     } catch (err) {
         const ErrMes = err?.response?.data?.error || err?.message || "Something went wrong";
@@ -55,9 +60,9 @@ export const login = async (dispatch, user) => {
 };
 
 export const checkAuth = async () => {
-    try{
+    try {
         const res = await axios.get(`${process.env.REACT_APP_API}/auth/check`)
-        
+
         return res.data
     } catch (err) {
         const ErrMes = err?.response?.data?.error || err?.message || "Something went wrong";
