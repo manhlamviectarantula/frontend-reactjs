@@ -4,7 +4,6 @@ import { toast } from "react-toastify"
 import { getMessage, getUserSidebarAdmin, sendMessage } from "./messageRedux"
 import qs from 'qs';
 import { connectSocket, disconnectSocket } from "../lib/socket";
-import { useNavigate } from "react-router-dom";
 
 export const getUserInfoFromToken = async (token, dispatch) => {
     try {
@@ -37,9 +36,7 @@ export const getUserInfoFromToken = async (token, dispatch) => {
 
 // apiCalls.jsx
 
-const navigate = useNavigate();
-
-export const login = async (dispatch, user) => {
+export const login = async (dispatch, user, navigate) => {
     dispatch(loginStart());
     try {
         const res = await axios.post(`${process.env.REACT_APP_API}/auth/login`, user);

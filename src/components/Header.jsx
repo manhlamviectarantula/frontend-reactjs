@@ -42,6 +42,7 @@ const Header = () => {
     const { isFetching, mesError } = useSelector((state) => state.user);
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -76,7 +77,7 @@ const Header = () => {
         }
 
         try {
-            await login(dispatch, { email, password });
+            await login(dispatch, { email, password }, navigate);
             handleCloseLogin();
         } catch (err) {
             toast.error(err.message);
