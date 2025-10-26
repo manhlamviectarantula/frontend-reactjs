@@ -16,7 +16,7 @@ function ChatBox() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.currentUser);
   const token = user?.token;
-  const userToChatID = 3;
+  const userToChatID = 1;
 
   const chatContainerRef = useRef(null);
   const bottomRef = useRef(null);

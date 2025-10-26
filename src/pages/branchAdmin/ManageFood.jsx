@@ -104,7 +104,13 @@ const ManageFood = () => {
 
             // Cập nhật lại danh sách món ăn
             const response = await axios.get(
-                `${process.env.REACT_APP_API}/food/get-foods-of-branch/${isBranchAdmin.BranchID}`
+                `${process.env.REACT_APP_API}/food/get-foods-of-branch/${isBranchAdmin.BranchID}`,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        "Authorization": `Bearer ${token}`
+                    }
+                }
             );
             setFoods(response.data || []);
         } catch (error) {
