@@ -68,6 +68,12 @@ const ManageFood = () => {
     const handleAddFood = async (e) => {
         e.preventDefault();
 
+        if (!FoodName || !Price || !Description || !ImageFood) {
+            toast.error("Vui lòng nhập đầy đủ thông tin!");
+            return;
+        }
+        setShowAddModal(false);
+
         const formData = new FormData();
         formData.append("FoodName", FoodName);
         formData.append("Price", Price);
@@ -90,7 +96,6 @@ const ManageFood = () => {
             );
 
             toast.success("Thêm thức ăn thành công!");
-            setShowAddModal(false);
             setFoodName("")
             setImageFood(null)
             setPrice("")

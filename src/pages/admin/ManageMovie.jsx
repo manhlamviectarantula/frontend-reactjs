@@ -268,7 +268,7 @@ const ManageMovie = () => {
                             <Form.Control type="date" value={ReleaseDate} onChange={e => setReleaseDate(e.target.value)} />
                         </Form.Group>
                         <Form.Group className="mb-3">
-                            <Form.Label>Ngày chiếu cuối</Form.Label>
+                            <Form.Label>Ngày chiếu cuối (dự kiến)</Form.Label>
                             <Form.Control type="date" value={LastScreenDate} onChange={e => setLastScreenDate(e.target.value)} />
                         </Form.Group>
                         <Form.Group className="mb-3">
@@ -329,7 +329,7 @@ const ManageMovie = () => {
                             <Form.Control type="date" value={selectedMovie?.ReleaseDate || ''} onChange={e => setSelectedMovie(prev => ({ ...prev, ReleaseDate: e.target.value }))} required />
                         </Form.Group>
                         <Form.Group className="mb-3">
-                            <Form.Label>Ngày chiếu cuối</Form.Label>
+                            <Form.Label>Ngày chiếu cuối (dự kiến)</Form.Label>
                             <Form.Control type="date" value={selectedMovie?.LastScreenDate || ''} onChange={e => setSelectedMovie(prev => ({ ...prev, LastScreenDate: e.target.value }))} required />
                         </Form.Group>
                         <Form.Group className="mb-3">
