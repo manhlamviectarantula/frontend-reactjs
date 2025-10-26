@@ -272,7 +272,7 @@ const ManageMovie = () => {
                             <Form.Control type="date" value={LastScreenDate} onChange={e => setLastScreenDate(e.target.value)} />
                         </Form.Group>
                         <Form.Group className="mb-3">
-                            <Form.Label>Trailer</Form.Label>
+                            <Form.Label>Trailer nhúng</Form.Label>
                             <Form.Control type="text" value={Trailer} onChange={e => setTrailer(e.target.value)} />
                         </Form.Group>
                         <Form.Group className="mb-3">
