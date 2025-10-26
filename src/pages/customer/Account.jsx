@@ -21,6 +21,7 @@ const Account = () => {
     const [Email, setEmail] = useState(userinfo.Email);
     const [PhoneNumber, setPhone] = useState(userinfo.PhoneNumber);
     const [BirthDate, setBirthDate] = useState(userinfo.BirthDate)
+    const [Point] = useState(userinfo.Point || 0)
 
     const handleUpdate = async (e) => {
         e.preventDefault();
@@ -181,6 +182,7 @@ const Account = () => {
                             >
                                 Chat với nhân viên CSKH
                             </Button>
+                                <div>Điểm thành viên: {Point}</div>
                         </div>
                     </Col>
                     <Col sm={6} className='d-none d-sm-block px-0'>

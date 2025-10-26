@@ -43,7 +43,7 @@ const ManageAccount = () => {
     const [actionType, setActionType] = useState("");
     const [branches, setBranches] = useState([]);
     const [selectedBranch, setSelectedBranch] = useState("");
-    const [selectedAccountType] = useState(2); 
+    const [selectedAccountType] = useState(2);
 
     // API call
     const getAccounts = useCallback(async (pageNumber = 1) => {
@@ -131,7 +131,7 @@ const ManageAccount = () => {
                 AccountID: selectedAccount.AccountID,
                 BranchID: parseInt(selectedBranch),
                 AccountTypeID: selectedAccountType,
-            }, { headers: { Authorization: `Bearer ${token}` }});
+            }, { headers: { Authorization: `Bearer ${token}` } });
             await getAccounts(page);
             setShowUpgradeModal(false);
         } catch (error) {
@@ -146,7 +146,7 @@ const ManageAccount = () => {
             await axios.put(`${process.env.REACT_APP_API}/account/downgrade-account`, {
                 AccountID: selectedAccount.AccountID,
                 AccountTypeID: 1, // user thường
-            }, { headers: { Authorization: `Bearer ${token}` }});
+            }, { headers: { Authorization: `Bearer ${token}` } });
             await getAccounts(page);
             setShowDowngradeModal(false);
         } catch (error) {
@@ -191,8 +191,8 @@ const ManageAccount = () => {
                                             <TableRow key={account.AccountID} hover>
                                                 <TableCell>{account.AccountID}</TableCell>
                                                 <TableCell>{account.Email}</TableCell>
-                                                <TableCell sx={{ color: account.Status = true ? "green" : "red" }}>
-                                                    {account.Status = true ? "Hoạt động" : "Đang khóa"}
+                                                <TableCell sx={{ color: account.Status ? "green" : "red" }}>
+                                                    {account.Status ? "Hoạt động" : "Đang khóa"}
                                                 </TableCell>
                                                 <TableCell>{account.AccountTypeName}</TableCell>
 
@@ -205,13 +205,13 @@ const ManageAccount = () => {
                                                 </TableCell>
 
                                                 <TableCell align="center">
-                                                    <Tooltip title={account.Status === 1 ? "Khóa tài khoản" : "Mở khóa tài khoản"}>
+                                                    <Tooltip title={account.Status ? "Khóa tài khoản" : "Mở khóa tài khoản"}>
                                                         <IconButton
-                                                            color={account.Status === 1 ? "error" : "success"}
+                                                            color={account.Status ? "error" : "success"}
                                                             onClick={() => handleOpenConfirmModal(account)}
                                                             disabled={loading}
                                                         >
-                                                            {account.Status === 1 ? <Lock fontSize="small"/> : <LockOpen fontSize="small"/>}
+                                                            {account.Status ? <Lock fontSize="small" /> : <LockOpen fontSize="small" />}
                                                         </IconButton>
                                                     </Tooltip>
                                                 </TableCell>
@@ -219,7 +219,7 @@ const ManageAccount = () => {
                                                 <TableCell align="center">
                                                     <Tooltip title={account.AccountTypeID === 2 ? "Hạ cấp tài khoản" : "Nâng cấp tài khoản"}>
                                                         <IconButton color="default" onClick={() => handleOpenUpgradeOrDowngradeModal(account)}>
-                                                            <ArrowDropDownCircle fontSize="small"/>
+                                                            <ArrowDropDownCircle fontSize="small" />
                                                         </IconButton>
                                                     </Tooltip>
                                                 </TableCell>
@@ -247,7 +247,155 @@ const ManageAccount = () => {
                 </Row>
             </Container>
 
-            {/* Modal hiển thị chi tiết */} <Modal show={showDetailsModal} onHide={() => setShowDetailsModal(false)} centered> <Modal.Header closeButton> <Modal.Title>Chi tiết tài khoản</Modal.Title> </Modal.Header> <Modal.Body> {selectedAccount && ( <div> <p><strong>ID:</strong> {selectedAccount.AccountID}</p> <p><strong>Email:</strong> {selectedAccount.Email}</p> <p><strong>Số điện thoại:</strong> {selectedAccount.PhoneNumber}</p> <p><strong>Họ tên:</strong> {selectedAccount.FullName}</p> <p><strong>Ngày sinh:</strong> {formatDate(selectedAccount.BirthDate)}</p> <p><strong>Loại tài khoản:</strong> {selectedAccount.AccountTypeName}</p> <p><strong>Chi nhánh quản lí:</strong> {selectedAccount.BranchName}</p> <p> <strong>Trạng thái:</strong> <span style={{ color: selectedAccount.Status = true ? "green" : "red" }}> {selectedAccount.Status = true ? "Hoạt động" : " Đang khóa"} </span> </p> <p><strong>Lần sửa cuối:</strong> {formatDatetime(selectedAccount.LastUpdatedAt)}</p> </div> )} </Modal.Body> <Modal.Footer> <Button variant="secondary" onClick={() => setShowDetailsModal(false)}>Đóng</Button> </Modal.Footer> </Modal> {/* Modal xác nhận khóa/mở khóa */} <Modal show={showConfirmModal} onHide={() => setShowConfirmModal(false)} centered> <Modal.Header closeButton> <Modal.Title>Xác nhận</Modal.Title> </Modal.Header> <Modal.Body> {selectedAccount && ( <p> {actionType === "lock" ? "Bạn có chắc chắn muốn khóa tài khoản này?" : "Bạn có chắc chắn muốn mở khóa tài khoản này?"} </p> )} </Modal.Body> <Modal.Footer> <Button variant="secondary" onClick={() => setShowConfirmModal(false)}>Hủy</Button> <Button variant={actionType === "lock" ? "danger" : "success"} onClick={handleBlockAccount} disabled={loading} > {loading ? "Đang xử lý..." : actionType === "lock" ? "Khóa tài khoản" : "Mở khóa tài khoản"} </Button> </Modal.Footer> </Modal> {/* Modal nâng cấp */} <Modal show={showUpgradeModal} onHide={() => setShowUpgradeModal(false)} centered> <Modal.Header closeButton> <Modal.Title>Nâng cấp tài khoản</Modal.Title> </Modal.Header> <Modal.Body> <p>Chọn chi nhánh để nâng cấp tài khoản thành quản lý chi nhánh:</p> <select className="form-select" value={selectedBranch} onChange={(e) => setSelectedBranch(e.target.value)} > <option value="">-- Chọn chi nhánh --</option> {branches.map(branch => ( <option key={branch.BranchID} value={branch.BranchID}> {branch.BranchName} </option> ))} </select> </Modal.Body> <Modal.Footer> <Button variant="secondary" onClick={() => setShowUpgradeModal(false)}>Hủy</Button> <Button variant="primary" onClick={handleUpgradeAccount} disabled={loading || !selectedBranch}> {loading ? "Đang xử lý..." : "Xác nhận nâng cấp"} </Button> </Modal.Footer> </Modal> {/* Modal hạ cấp */} <Modal show={showDowngradeModal} onHide={() => setShowDowngradeModal(false)} centered> <Modal.Header closeButton> <Modal.Title>Hạ cấp tài khoản</Modal.Title> </Modal.Header> <Modal.Body> {selectedAccount && ( <> <p><strong>Email:</strong> {selectedAccount.Email}</p> <p>Bạn có chắc muốn hạ cấp tài khoản này thành tài khoản thường?</p> </> )} </Modal.Body> <Modal.Footer> <Button variant="secondary" onClick={() => setShowDowngradeModal(false)}>Hủy</Button> <Button variant="danger" onClick={handleDowngradeAccount} disabled={loading}> {loading ? "Đang xử lý..." : "Xác nhận hạ cấp"} </Button> </Modal.Footer> </Modal>
+            {/* Modal hiển thị chi tiết */}
+            <Modal
+                show={showDetailsModal}
+                onHide={() => setShowDetailsModal(false)}
+                centered
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Chi tiết tài khoản</Modal.Title>
+                </Modal.Header>
+
+                <Modal.Body>
+                    {selectedAccount && (
+                        <div>
+                            <p><strong>ID:</strong> {selectedAccount.AccountID}</p>
+                            <p><strong>Email:</strong> {selectedAccount.Email}</p>
+                            <p><strong>Số điện thoại:</strong> {selectedAccount.PhoneNumber}</p>
+                            <p><strong>Họ tên:</strong> {selectedAccount.FullName}</p>
+                            <p><strong>Ngày sinh:</strong> {formatDate(selectedAccount.BirthDate)}</p>
+                            <p><strong>Loại tài khoản:</strong> {selectedAccount.AccountTypeName}</p>
+                            <p><strong>Chi nhánh quản lí:</strong> {selectedAccount.BranchName}</p>
+                            <p>
+                                <strong>Trạng thái:</strong>{" "}
+                                <span style={{ color: selectedAccount.Status ? "green" : "red" }}>
+                                    {selectedAccount.Status ? "Hoạt động" : "Đang khóa"}
+                                </span>
+                            </p>
+                            <p><strong>Lần sửa cuối:</strong> {formatDatetime(selectedAccount.LastUpdatedAt)}</p>
+                        </div>
+                    )}
+                </Modal.Body>
+
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowDetailsModal(false)}>
+                        Đóng
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            {/* Modal xác nhận khóa/mở khóa */}
+            <Modal
+                show={showConfirmModal}
+                onHide={() => setShowConfirmModal(false)}
+                centered
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Xác nhận</Modal.Title>
+                </Modal.Header>
+
+                <Modal.Body>
+                    {selectedAccount && (
+                        <p>
+                            {selectedAccount?.Status
+                                ? "Bạn có chắc chắn muốn khóa tài khoản này?"
+                                : "Bạn có chắc chắn muốn mở khóa tài khoản này?"}
+                        </p>
+                    )}
+                </Modal.Body>
+
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowConfirmModal(false)}>
+                        Hủy
+                    </Button>
+                    <Button
+                        variant={selectedAccount?.Status ? "danger" : "success"}
+                        onClick={handleBlockAccount}
+                        disabled={loading}
+                    >
+                        {loading
+                            ? "Đang xử lý..."
+                            : selectedAccount?.Status
+                                ? "Khóa tài khoản"
+                                : "Mở khóa tài khoản"}
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            {/* Modal nâng cấp */}
+            <Modal
+                show={showUpgradeModal}
+                onHide={() => setShowUpgradeModal(false)}
+                centered
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Nâng cấp tài khoản</Modal.Title>
+                </Modal.Header>
+
+                <Modal.Body>
+                    <p>Chọn chi nhánh để nâng cấp tài khoản thành quản lý chi nhánh:</p>
+                    <select
+                        className="form-select"
+                        value={selectedBranch}
+                        onChange={(e) => setSelectedBranch(e.target.value)}
+                    >
+                        <option value="">-- Chọn chi nhánh --</option>
+                        {branches.map((branch) => (
+                            <option key={branch.BranchID} value={branch.BranchID}>
+                                {branch.BranchName}
+                            </option>
+                        ))}
+                    </select>
+                </Modal.Body>
+
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowUpgradeModal(false)}>
+                        Hủy
+                    </Button>
+                    <Button
+                        variant="primary"
+                        onClick={handleUpgradeAccount}
+                        disabled={loading || !selectedBranch}
+                    >
+                        {loading ? "Đang xử lý..." : "Xác nhận nâng cấp"}
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            {/* Modal hạ cấp */}
+            <Modal
+                show={showDowngradeModal}
+                onHide={() => setShowDowngradeModal(false)}
+                centered
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Hạ cấp tài khoản</Modal.Title>
+                </Modal.Header>
+
+                <Modal.Body>
+                    {selectedAccount && (
+                        <>
+                            <p><strong>Email:</strong> {selectedAccount.Email}</p>
+                            <p>Bạn có chắc muốn hạ cấp tài khoản này thành tài khoản thường?</p>
+                        </>
+                    )}
+                </Modal.Body>
+
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowDowngradeModal(false)}>
+                        Hủy
+                    </Button>
+                    <Button
+                        variant="danger"
+                        onClick={handleDowngradeAccount}
+                        disabled={loading}
+                    >
+                        {loading ? "Đang xử lý..." : "Xác nhận hạ cấp"}
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
         </div>
     );
 };

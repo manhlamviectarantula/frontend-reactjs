@@ -34,6 +34,8 @@ import HoldSeats from './components/HoldSeats';
 import ChatBot from './pages/customer/ChatBot';
 import Actor from './pages/customer/Actor';
 import Director from './pages/customer/Director';
+import BranchAdminInfo from './pages/branchAdmin/BranchAdminInfo';
+import OAuthCallback from './components/OAuthCallback';
 
 
 function App() {
@@ -103,12 +105,15 @@ function App() {
           <Route path="/director" element={<Director />} />
 
           <Route path="/momo/result" element={<MomoResult />} />
+          <Route path="/oauth-callback" element={<OAuthCallback />} />
+
         </>
 
         {
           user?.AccountTypeID === 2 && (
             <>
               <Route path='/branch-ad-dashboard' element={<BranchAdminDashboard />}></Route>
+              <Route path='/branch-ad-info' element={<BranchAdminInfo />}></Route>
               <Route path='/manageTheater' element={<ManageTheater />}></Route>
               <Route path='/manageShowtime' element={<ManageShowtime />}></Route>
               <Route path='/manageFood' element={<ManageFood />}></Route>

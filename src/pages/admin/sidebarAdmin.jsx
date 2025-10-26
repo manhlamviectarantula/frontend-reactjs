@@ -1,5 +1,5 @@
 const SidebarAdmin = [
-    { path: '/ad-dashboard', label: 'Thông tin hệ thống' },
+    { path: '/ad-dashboard', label: 'Thống kê số liệu' },
     { path: '/manageAccount', label: 'Quản lý tài khoản' },
     { path: '/manageBranch', label: 'Quản lý chi nhánh' },
     { path: '/manageMovie', label: 'Quản lý phim' },

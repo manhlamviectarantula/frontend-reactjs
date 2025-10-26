@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { toast, ToastContainer } from 'react-toastify';
 import { formatBranchSlug, formatDatetime, removeVietnameseTones } from '../../lib/utils';
 import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from '@mui/material';
-import { KeyboardDoubleArrowRight, Lock, LockOpen } from '@mui/icons-material';
+import { ChairOutlined, KeyboardDoubleArrowRight, Lock, LockOpen } from '@mui/icons-material';
 
 const ManageTheater = () => {
     const user = useSelector((state) => state.user.currentUser)
@@ -18,6 +18,7 @@ const ManageTheater = () => {
 
     const [Theaters, setTheaters] = useState([]);
     const [showEditModal, setShowEditModal] = useState(false)
+    const [seatDataModal, setSeatDataModal] = useState(false)
     const [DetailsTheater, setDetailsTheater] = useState(null)
     const [seatingData, setSeatingData] = useState({ rows: [], maxColumn: 0, maxRow: 0 });
 
@@ -32,6 +33,8 @@ const ManageTheater = () => {
         CreatedBy: isBranchAdmin.Email || '',
         LastUpdatedBy: isBranchAdmin.Email || ''
     });
+
+    const [editTheaterInfo, setEditTheaterInfo] = useState(null);
 
     useEffect(() => {
         if (!isBranchAdmin.BranchID) return;
@@ -58,6 +61,26 @@ const ManageTheater = () => {
     const rowNames = Array.from({ length: maxRow }, (_, i) => String.fromCharCode(65 + (maxRow - i - 1)));
 
     const ShowDetailsTheater = (TheaterID) => {
+        const getDetailsTheater = async () => {
+            if (!TheaterID) return;
+            try {
+                const response = await axios.get(
+                    `${process.env.REACT_APP_API}/theater/get-details-theater/${TheaterID}`,
+                    { headers: { Authorization: `Bearer ${token}` } }
+                );
+                if (response.data?.data) {
+                    setDetailsTheater(response.data.data);
+                    setEditTheaterInfo(response.data.data); // 🎯 Khởi tạo state để edit
+                }
+            } catch (error) {
+                console.error('Error fetching Theater details:', error);
+            }
+        };
+        getDetailsTheater();
+        setShowEditModal(true);
+    };
+
+    const ShowSeatData = (TheaterID) => {
         const getDetailsTheater = async () => {
             if (!TheaterID) return;
             try {
@@ -99,7 +122,7 @@ const ManageTheater = () => {
         getSeatingData()
         getDetailsTheater();
 
-        setShowEditModal(true)
+        setSeatDataModal(true)
     }
 
     const renderSeats = (row) => {
@@ -363,7 +386,7 @@ const ManageTheater = () => {
                                         <TableCell sx={{ color: 'white' }}><b>Tên rạp</b></TableCell>
                                         <TableCell sx={{ color: 'white' }}><b>Loại rạp</b></TableCell>
                                         <TableCell sx={{ color: 'white' }}><b>Trạng thái</b></TableCell>
-                                        <TableCell sx={{ color: 'white' }} align="center" colSpan={2}><b>Tùy chỉnh</b></TableCell>
+                                        <TableCell sx={{ color: 'white' }} align="center" colSpan={3}><b>Tùy chỉnh</b></TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -376,9 +399,16 @@ const ManageTheater = () => {
                                                 {Theater.Status ? "Hoạt động" : "Đang khóa"}
                                             </TableCell>
                                             <TableCell align="center">
-                                                <Tooltip title="Xem chi tiết">
+                                                <Tooltip title="Thông tin rạp chiếu">
                                                     <IconButton color="primary" onClick={() => ShowDetailsTheater(Theater.TheaterID)}>
                                                         <KeyboardDoubleArrowRight fontSize="small" />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                <Tooltip title="Vị trí ghế ngồi">
+                                                    <IconButton color="primary" onClick={() => ShowSeatData(Theater.TheaterID)}>
+                                                        <ChairOutlined fontSize="small" />
                                                     </IconButton>
                                                 </Tooltip>
                                             </TableCell>
@@ -405,29 +435,13 @@ const ManageTheater = () => {
                 </Row>
             </Container>
 
-            {/* Modal Details Theater */}
-            <Modal show={showEditModal} onHide={() => setShowEditModal(false)} centered size="xl">
+            {/* Modal SeatsData */}
+            <Modal show={seatDataModal} onHide={() => setSeatDataModal(false)} centered size="xl">
                 <Modal.Header closeButton>
-                    <Modal.Title>Chi tiết rạp chiếu:</Modal.Title>
+                    <Modal.Title>Vị trí ghế ngồi:</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
-                        {/* Nhập tên thức ăn */}
-                        <Form.Group className="mb-3">
-                            <Form.Label><strong>Tên rạp:</strong></Form.Label>
-                            <Form.Control className='mb-3' type="text" value={DetailsTheater?.TheaterName} readOnly />
-                        </Form.Group>
-
-                        <Form.Group className="mb-3">
-                            <Form.Label><strong>Loại rạp:</strong></Form.Label>
-                            <Form.Control className='mb-3' type="text" value={DetailsTheater?.TheaterType} readOnly />
-                        </Form.Group>
-
-                        <Form.Group className="mb-3">
-                            <Form.Label><strong>Mã rạp:</strong></Form.Label>
-                            <Form.Control className='mb-3' type="text" value={DetailsTheater?.Slug} readOnly />
-                        </Form.Group>
-
                         <Form.Group className="mb-3">
                             <Form.Label><strong>Số hàng ghế:</strong></Form.Label>
                             <Form.Control className='mb-3' type="text" value={DetailsTheater?.MaxRow} readOnly />
@@ -436,16 +450,6 @@ const ManageTheater = () => {
                         <Form.Group className="mb-3">
                             <Form.Label><strong>Số cột ghế:</strong></Form.Label>
                             <Form.Control className='mb-3' type="text" value={DetailsTheater?.MaxColumn} readOnly />
-                        </Form.Group>
-
-                        <Form.Group className="mb-3">
-                            <Form.Label><strong>Ngày tạo:</strong></Form.Label>
-                            <Form.Control className='mb-3' type="text" value={formatDatetime(DetailsTheater?.CreatedAt)} readOnly />
-                        </Form.Group>
-
-                        <Form.Group className="mb-3">
-                            <Form.Label><strong>Người tạo:</strong></Form.Label>
-                            <Form.Control className='mb-3' type="text" value={DetailsTheater?.CreatedBy} readOnly />
                         </Form.Group>
                     </Form>
                     <div className="py-3 d-flex justify-content-between align-items-center">
@@ -467,6 +471,110 @@ const ManageTheater = () => {
                         <p className='text-center text-secondary mb-2 mt-4'>Màn hình</p>
                         <div className='border border-2 border-secondary'></div>
                     </div>
+
+                    <Button onClick={toDesignSeats} variant="dark" className="mt-2 w-100">
+                        Sửa vị trí ghế
+                    </Button>
+                </Modal.Body>
+            </Modal>
+
+            {/* Modal Details Theater */}
+            <Modal show={showEditModal} onHide={() => setShowEditModal(false)} centered size="xl">
+                <Modal.Header closeButton>
+                    <Modal.Title>Thông tin rạp chiếu:</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {editTheaterInfo && (
+                        <Form>
+                            {/* Tên rạp */}
+                            <Form.Group className="mb-3">
+                                <Form.Label><strong>Tên rạp:</strong></Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={editTheaterInfo.TheaterName}
+                                    onChange={(e) => {
+                                        const newName = e.target.value;
+                                        const theaterSlug = removeVietnameseTones(newName.toLowerCase());
+                                        const branchSlug = formatBranchSlug(branchName);
+                                        setEditTheaterInfo(prev => ({
+                                            ...prev,
+                                            TheaterName: newName,
+                                            Slug: `${theaterSlug}${branchSlug}`
+                                        }));
+                                    }}
+                                />
+                            </Form.Group>
+
+                            {/* Loại rạp */}
+                            <Form.Group className="mb-3">
+                                <Form.Label><strong>Loại rạp:</strong></Form.Label>
+                                <Form.Select
+                                    value={editTheaterInfo.TheaterType}
+                                    onChange={(e) => setEditTheaterInfo(prev => ({ ...prev, TheaterType: e.target.value }))}
+                                >
+                                    <option value="">-- Chọn loại rạp --</option>
+                                    <option value="2D">2D</option>
+                                    <option value="3D">3D</option>
+                                    <option value="IMAX">IMAX</option>
+                                </Form.Select>
+                            </Form.Group>
+
+                            {/* Slug */}
+                            <Form.Group className="mb-3">
+                                <Form.Label><strong>Mã rạp:</strong></Form.Label>
+                                <Form.Control type="text" value={editTheaterInfo.Slug} readOnly />
+                            </Form.Group>
+
+                            {/* Ngày tạo & người tạo */}
+                            <Form.Group className="mb-3">
+                                <Form.Label><strong>Ngày tạo:</strong></Form.Label>
+                                <Form.Control type="text" value={formatDatetime(editTheaterInfo.CreatedAt)} readOnly />
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label><strong>Người tạo:</strong></Form.Label>
+                                <Form.Control type="text" value={editTheaterInfo.CreatedBy} readOnly />
+                            </Form.Group>
+
+                            {/* Lần sửa & người sửa */}
+                            <Form.Group className="mb-3">
+                                <Form.Label><strong>Lần sửa cuối:</strong></Form.Label>
+                                <Form.Control type="text" value={formatDatetime(editTheaterInfo.LastUpdatedAt)} readOnly />
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label><strong>Người sửa cuối:</strong></Form.Label>
+                                <Form.Control type="text" value={editTheaterInfo.LastUpdatedBy} readOnly />
+                            </Form.Group>
+
+                            {/* Nút lưu thay đổi */}
+                            <Button
+                                variant="dark"
+                                className="w-100 mt-3"
+                                onClick={async () => {
+                                    try {
+                                        const response = await axios.put(
+                                            `${process.env.REACT_APP_API}/theater/update-theater/${editTheaterInfo.TheaterID}`,
+                                            editTheaterInfo,
+                                            { headers: { Authorization: `Bearer ${token}` } }
+                                        );
+                                        toast.success("Cập nhật rạp chiếu thành công!");
+                                        setShowEditModal(false);
+
+                                        // Cập nhật lại danh sách rạp
+                                        setTheaters(prev => prev.map(t =>
+                                            t.TheaterID === response.data.data.TheaterID
+                                                ? response.data.data
+                                                : t
+                                        ));
+                                    } catch (error) {
+                                        console.error(error);
+                                        toast.error("Cập nhật thất bại, vui lòng thử lại!");
+                                    }
+                                }}
+                            >
+                                Lưu thay đổi
+                            </Button>
+                        </Form>
+                    )}
                 </Modal.Body>
             </Modal>
 
@@ -548,6 +656,85 @@ const ManageTheater = () => {
             <Modal show={showDesignSeats} onHide={() => setshowDesignSeats(false)} centered size="xl">
                 <Modal.Header closeButton>
                     <Modal.Title>Thiết kế vị trí ghế:</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <>
+                        <div className="py-3 d-flex justify-content-between align-items-center">
+                            <Button
+                                onClick={() => { setshowDesignSeats(false); setshowAddTheaterModal(true) }}
+                                variant="dark"
+                            >
+                                Quay lại
+                            </Button>
+                            <Button
+                                variant='secondary'
+                                onClick={() => createTheaterAndSeats()}
+                            >
+                                Tạo rạp chiếu
+                            </Button>
+                        </div>
+                        <div style={{ background: '#eeeeee', borderRadius: '4px', padding: '30px' }}>
+                            {rowNames.map((rowName, rowIndex) => {
+                                // Tạo danh sách chỗ ngồi của hàng hiện tại
+                                const seatColumnMap = Array.from({ length: parseInt(theaterInfo.MaxColumn, 10) }).fill(null);
+
+                                insertSeatsData
+                                    .filter(seat => seat.Row === rowIndex)
+                                    .forEach(seat => {
+                                        seatColumnMap[seat.Column] = seat;
+                                    });
+
+                                return (
+                                    <div key={rowIndex} className="d-flex justify-content-between align-items-center mb-2">
+                                        {/* Tên hàng bên trái */}
+                                        <div style={{ width: "30px", textAlign: "center" }}>{rowName}</div>
+
+                                        {/* Dãy ghế */}
+                                        <div className="d-flex">
+                                            {seatColumnMap.map((seat, columnIndex) => (
+                                                <Button
+                                                    key={columnIndex}
+                                                    variant={seat ? "outline-danger" : "outline-secondary"}
+                                                    onClick={() => {
+                                                        const seatData = seat || {
+                                                            Row: rowIndex,
+                                                            Column: columnIndex,
+                                                            RowName: rowName,
+                                                            Area: 1,
+                                                            SeatNumber: parseInt(theaterInfo.MaxColumn, 10) - columnIndex
+                                                        };
+                                                        handleSeatClickDesign(seatData)
+                                                    }}
+                                                    style={{
+                                                        width: "22px",
+                                                        height: "22px",
+                                                        fontSize: "14px",
+                                                        margin: "0 3px",
+                                                        padding: "0"
+                                                    }}
+                                                >
+                                                    {seat ? seat.SeatNumber : "+"}
+                                                </Button>
+                                            ))}
+                                        </div>
+
+                                        {/* Tên hàng bên phải */}
+                                        <div style={{ width: "30px", textAlign: "center" }}>{rowName}</div>
+                                    </div>
+                                );
+                            })}
+                            <p className="text-center text-secondary mb-2 mt-4">Màn hình</p>
+                            <div className="border border-2 border-secondary mb-2"></div>
+                            <div>Lưu ý: thiết kế vị trí ghế ngồi của rạp chiếu để đồng nhất với rạp chiếu đã được xây dựng ở chi nhánh</div>
+                        </div>
+                    </>
+                </Modal.Body>
+            </Modal>
+
+            {/* Modal Update Seat */}
+            <Modal show={showDesignSeats} onHide={() => setshowDesignSeats(false)} centered size="xl">
+                <Modal.Header closeButton>
+                    <Modal.Title>Sửa vị trí ghế:</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <>

@@ -7,8 +7,8 @@ import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHe
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import { store } from '../../redux/store';
-import { formatDatetime } from '../../lib/utils';
 import { useSelector } from 'react-redux';
+import slugify from 'slugify';
 
 const ManageBranch = () => {
     const user = useSelector((state) => state.user.currentUser);
@@ -227,12 +227,22 @@ const ManageBranch = () => {
                     <Form onSubmit={handleAddBranch} encType="multipart/form-data">
                         <Form.Group className="mb-3">
                             <Form.Label><strong>Tên chi nhánh:</strong></Form.Label>
-                            <Form.Control type="text" value={BranchName} onChange={(e) => setBranchName(e.target.value)} />
+                            <Form.Control
+                                type="text"
+                                value={BranchName}
+                                onChange={(e) => {
+                                    const name = e.target.value;
+                                    setBranchName(name);
+                                    setSlug(slugify(name, { lower: true }));
+                                }}
+                            />
                         </Form.Group>
+
                         <Form.Group className="mb-3">
-                            <Form.Label><strong>Mã định danh:</strong></Form.Label>
-                            <Form.Control type="text" value={Slug} onChange={(e) => setSlug(e.target.value)} />
+                            <Form.Label><strong>Mã định danh (slug):</strong></Form.Label>
+                            <Form.Control type="text" value={Slug} readOnly />
                         </Form.Group>
+
                         <Form.Group className="mb-3">
                             <Form.Label><strong>Email:</strong></Form.Label>
                             <Form.Control type="text" value={Email} onChange={(e) => setEmail(e.target.value)} />
@@ -287,12 +297,25 @@ const ManageBranch = () => {
                         }}>
                             <Form.Group className="mb-3">
                                 <Form.Label><strong>Tên chi nhánh:</strong></Form.Label>
-                                <Form.Control type="text" value={selectedBranch.BranchName} onChange={(e) => setSelectedBranch({ ...selectedBranch, BranchName: e.target.value })} />
+                                <Form.Control
+                                    type="text"
+                                    value={selectedBranch.BranchName}
+                                    onChange={(e) => {
+                                        const name = e.target.value;
+                                        setSelectedBranch({
+                                            ...selectedBranch,
+                                            BranchName: name,
+                                            Slug: slugify(name, { lower: true })
+                                        });
+                                    }}
+                                />
                             </Form.Group>
+
                             <Form.Group className="mb-3">
-                                <Form.Label><strong>Mã định danh:</strong></Form.Label>
-                                <Form.Control type="text" value={selectedBranch.Slug} onChange={(e) => setSelectedBranch({ ...selectedBranch, Slug: e.target.value })} />
+                                <Form.Label><strong>Mã định danh (slug):</strong></Form.Label>
+                                <Form.Control type="text" value={selectedBranch.Slug} readOnly />
                             </Form.Group>
+
                             <Form.Group className="mb-3">
                                 <Form.Label><strong>Email:</strong></Form.Label>
                                 <Form.Control type="text" value={selectedBranch.Email} onChange={(e) => setSelectedBranch({ ...selectedBranch, Email: e.target.value })} />

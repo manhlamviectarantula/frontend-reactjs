@@ -1,5 +1,6 @@
 const SidebarBranchAdmin = [
-    { path: '/branch-ad-dashboard', label: 'Thông tin chi nhánh' },
+    { path: '/branch-ad-dashboard', label: 'Thống kê số liệu' },
+    { path: '/branch-ad-info', label: 'Thông tin chi nhánh' },
     { path: '/manageTheater', label: 'Quản lý rạp chiếu' },
     { path: '/manageShowtime', label: 'Quản lý suất chiếu' },
     { path: '/manageFood', label: 'Quản lý thức ăn' },
