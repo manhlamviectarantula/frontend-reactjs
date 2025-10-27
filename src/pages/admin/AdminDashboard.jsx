@@ -45,6 +45,7 @@ const AdminDashboard = () => {
                 break;
         }
     };
+    
     const cardMap = {
         movies: { title: 'Doanh thu phim', color: '#673AB7', icon: <Movie fontSize="large" /> },
         branches: { title: 'Doanh thu chi nhánh', color: '#2196F3', icon: <Business fontSize="large" /> },

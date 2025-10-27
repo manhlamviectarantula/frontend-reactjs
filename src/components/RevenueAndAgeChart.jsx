@@ -113,7 +113,7 @@ const RevenueAndAgeChart = () => {
                 </Row>
 
                 <ResponsiveContainer width="100%" height={400}>
-                    <BarChart data={columnData} margin={{ top: 30, right: 20, left: 20, bottom: 5 }}>
+                    <BarChart data={columnData} margin={{ top: 30, right: 10, left: 35, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="Month" />
                         <YAxis tickFormatter={formatCurrency} />
