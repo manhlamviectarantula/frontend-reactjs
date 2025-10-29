@@ -26,18 +26,19 @@ const Account = () => {
     const handleUpdate = async (e) => {
         e.preventDefault();
 
-        // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        // const phoneRegex = /^(0|\+84)[0-9]{9}$/;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const phoneRegex = /^(0|\+84)[0-9]{9}$/;
 
-        // if (!emailRegex.test(Email)) {
-        //     toast.error("Email không hợp lệ.");
-        //     return;
-        // }
+        if (!emailRegex.test(Email)) {
+            toast.error("Email không hợp lệ.");
+            return;
+        }
 
-        // if (!phoneRegex.test(PhoneNumber)) {
-        //     toast.error("Số điện thoại không hợp lệ.");
-        //     return;
-        // }
+        // Kiểm tra số điện thoại chỉ khi có giá trị
+        if (PhoneNumber && !phoneRegex.test(PhoneNumber)) {
+            toast.error("Số điện thoại không hợp lệ.");
+            return;
+        }
 
         await updateUserAPI(dispatch, id, {
             FullName,
@@ -46,6 +47,7 @@ const Account = () => {
             BirthDate
         }, token);
     };
+
 
     const handleLogout = () => {
         logout(dispatch);
@@ -182,7 +184,7 @@ const Account = () => {
                             >
                                 Chat với nhân viên CSKH
                             </Button>
-                                <div>Điểm thành viên: {Point}</div>
+                            <div>Điểm thành viên: {Point}</div>
                         </div>
                     </Col>
                     <Col sm={6} className='d-none d-sm-block px-0'>
