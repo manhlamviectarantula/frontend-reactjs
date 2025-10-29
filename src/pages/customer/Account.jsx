@@ -26,18 +26,18 @@ const Account = () => {
     const handleUpdate = async (e) => {
         e.preventDefault();
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const phoneRegex = /^(0|\+84)[0-9]{9}$/;
+        // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        // const phoneRegex = /^(0|\+84)[0-9]{9}$/;
 
-        if (!emailRegex.test(Email)) {
-            toast.error("Email không hợp lệ.");
-            return;
-        }
+        // if (!emailRegex.test(Email)) {
+        //     toast.error("Email không hợp lệ.");
+        //     return;
+        // }
 
-        if (!phoneRegex.test(PhoneNumber)) {
-            toast.error("Số điện thoại không hợp lệ.");
-            return;
-        }
+        // if (!phoneRegex.test(PhoneNumber)) {
+        //     toast.error("Số điện thoại không hợp lệ.");
+        //     return;
+        // }
 
         await updateUserAPI(dispatch, id, {
             FullName,

@@ -290,7 +290,7 @@ const ManageMovie = () => {
                             }} />
                         </Form.Group>
                         <Form.Group className="mb-3">
-                            <Form.Label>Mô tả</Form.Label>
+                            <Form.Label>Nội dung phim</Form.Label>
                             <Form.Control as="textarea" rows={3} value={Description} onChange={e => setDescription(e.target.value)} />
                         </Form.Group>
                         <Button type="submit" variant="dark" className="w-100">Thêm phim</Button>
@@ -351,7 +351,7 @@ const ManageMovie = () => {
                             }} />
                         </Form.Group>
                         <Form.Group className="mb-3">
-                            <Form.Label>Mô tả</Form.Label>
+                            <Form.Label>Nội dung phim</Form.Label>
                             <Form.Control as="textarea" rows={3} value={selectedMovie?.Description || ''} onChange={e => setSelectedMovie(prev => ({ ...prev, Description: e.target.value }))} required />
                         </Form.Group>
                         <Button type="submit" variant="dark" className="w-100">Lưu thay đổi</Button>
