@@ -223,13 +223,22 @@ const ManageFood = () => {
             toast.success("Đã đổi trạng thái món ăn thành công!");
 
             // Cập nhật trực tiếp trạng thái trên state mà không fetch lại toàn bộ
-            setFoods((prevFoods) =>
-                prevFoods.map((f) =>
-                    f.FoodID === food.FoodID
-                        ? { ...f, Status: f.Status === 1 ? 0 : 1 }
-                        : f
-                )
+            // setFoods((prevFoods) =>
+            //     prevFoods.map((f) =>
+            //         f.FoodID === food.FoodID
+            //             ? { ...f, Status: f.Status === 1 ? 0 : 1 }
+            //             : f
+            //     )
+            // );
+            const response = await axios.get(
+                `${process.env.REACT_APP_API}/food/get-foods-of-branch/${isBranchAdmin.BranchID}`,
+                {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                }
             );
+            setFoods(response.data || []);
         } catch (error) {
             console.error("Error toggling food status:", error);
             toast.error(
