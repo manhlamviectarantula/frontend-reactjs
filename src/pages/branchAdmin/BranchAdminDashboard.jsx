@@ -23,7 +23,7 @@ const BranchAdminDashboard = () => {
         setSelectedCardKey(key);
 
         switch (key) {
-            case "movies":
+            case "branches":
                 setDrawerStatic(<BranchesDrawer />);
                 setShowDrawer(true);
                 break;
@@ -33,7 +33,7 @@ const BranchAdminDashboard = () => {
                 setShowDrawer(true);
                 break;
 
-            case "branches":
+            case "movies":
             case "receipts":
             case "theaters":
             case "showtimes":
@@ -48,9 +48,9 @@ const BranchAdminDashboard = () => {
         }
     };
     const cardMap = {
-        movies: { title: 'Doanh thu phim', color: '#673AB7', icon: <Movie fontSize="large" /> },
+        branches: { title: 'Doanh thu chi nhánh', color: '#673AB7', icon: <Business fontSize="large" /> },
         foods: { title: 'Doanh thu thức ăn', color: '#009688', icon: <Fastfood fontSize="large" /> },
-        branches: { title: 'Thống kê chi nhánh', color: '#2196F3', icon: <Business fontSize="large" /> },
+        movies: { title: 'Thống kê phim', color: '#2196F3', icon: <Movie fontSize="large" /> },
         receipts: { title: 'Thống kê hóa đơn', color: '#72b371', icon: <ReceiptLong fontSize="large" /> },
         theaters: { title: 'Thống kê rạp phim', color: '#FF5722', icon: <Stadium fontSize="large" /> },
         showtimes: { title: 'Thống kê suất chiếu', color: '#0dcaf0', icon: <Slideshow fontSize="large" /> },
