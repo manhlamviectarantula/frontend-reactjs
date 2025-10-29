@@ -162,7 +162,12 @@ const ManageFood = () => {
 
             // Cập nhật danh sách món ăn
             const response = await axios.get(
-                `${process.env.REACT_APP_API}/food/get-foods-of-branch/${isBranchAdmin.BranchID}`
+                `${process.env.REACT_APP_API}/food/get-foods-of-branch/${isBranchAdmin.BranchID}`,
+                {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                }
             );
             setFoods(response.data || []);
         } catch (error) {
@@ -183,7 +188,12 @@ const ManageFood = () => {
 
             // Cập nhật danh sách món ăn sau khi xóa
             const response = await axios.get(
-                `${process.env.REACT_APP_API}/food/get-foods-of-branch/${isBranchAdmin.BranchID}`
+                `${process.env.REACT_APP_API}/food/get-foods-of-branch/${isBranchAdmin.BranchID}`,
+                {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                }
             );
             setFoods(response.data || []);
 
