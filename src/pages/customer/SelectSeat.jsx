@@ -5,7 +5,7 @@ import Footer from '../../components/Footer';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { addSeat, addShowtimeInfoDisplay, addShowtimeInfoOrder } from '../../redux/orderRedux';
+import { addSeat, addShowtimeInfoDisplay, addShowtimeInfoOrder, resetOrderFoods } from '../../redux/orderRedux';
 import { toast } from 'react-toastify';
 import { formatDate } from '../../lib/utils';
 import { lockSeats, startHold } from '../../redux/seatHoldRedux';
@@ -194,6 +194,7 @@ const SelectSeat = () => {
         dispatch(addShowtimeInfoOrder(ShowtimeInfo));
         dispatch(startHold());
         dispatch(lockSeats(selectedSeats.map(seat => seat.ShowtimeSeatID)))
+        dispatch(resetOrderFoods())
 
         try {
             await axios.post(

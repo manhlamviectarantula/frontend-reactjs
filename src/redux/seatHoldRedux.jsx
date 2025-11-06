@@ -2,7 +2,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  timeLeft: 120, // 5 phút
+  timeLeft: 60, 
   isHolding: false,
   lockedSeats: [],
 };
@@ -12,7 +12,7 @@ const seatHoldSlice = createSlice({
   initialState,
   reducers: {
     startHold: (state, action) => {
-      state.timeLeft = action.payload || 120; 
+      state.timeLeft = action.payload || 60; 
       state.isHolding = true;
     },
     tick: (state) => {
@@ -23,7 +23,7 @@ const seatHoldSlice = createSlice({
       }
     },
     resetHold: (state) => {
-      state.timeLeft = 120;
+      state.timeLeft = 60;
       state.isHolding = false;
       state.lockedSeats = [];
     },

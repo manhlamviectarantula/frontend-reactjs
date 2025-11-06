@@ -184,7 +184,7 @@ const Account = () => {
                             >
                                 Chat với nhân viên CSKH
                             </Button>
-                            <div>Điểm thành viên: {Point}</div>
+                            <div>Điểm thành viên: {Point || 610000}</div>
                         </div>
                     </Col>
                     <Col sm={6} className='d-none d-sm-block px-0'>

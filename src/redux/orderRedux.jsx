@@ -65,7 +65,7 @@ const orderSlice = createSlice({
             }
         },
         resetOrder: (state) => {
-            state.ShowtimeInfo = {
+            state.ShowtimeInfoDisplay = {
                 MovieName: "",
                 Poster: "",
                 Duration: "",
@@ -76,11 +76,17 @@ const orderSlice = createSlice({
                 StartTime: "",
                 ShowDate: "",
             };
+            state.ShowtimeInfoOrder = {
+                ShowtimeID: null,
+            };
             state.selectedSeats = [];
+            state.orderFoods = [];
+        },
+        resetOrderFoods: (state) => {
             state.orderFoods = [];
         }
     }
 })
 
-export const { addSeat, addShowtimeInfoDisplay, addShowtimeInfoOrder, addOrderFoods, decreaseOrderFood, resetOrder } = orderSlice.actions;
+export const { addSeat, addShowtimeInfoDisplay, addShowtimeInfoOrder, addOrderFoods, decreaseOrderFood, resetOrder, resetOrderFoods } = orderSlice.actions;
 export default orderSlice.reducer;

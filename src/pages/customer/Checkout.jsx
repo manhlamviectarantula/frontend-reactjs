@@ -3,11 +3,12 @@ import { Container, Row, Col, Card, Button, Form, InputGroup, Modal } from 'reac
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { formatDate } from '../../lib/utils';
 import { toast } from 'react-toastify';
 import HoldSeatsTimer from '../../components/HoldSeatsTimer';
 import PaymentMethod from '../../components/PaymentMethod';
+import { resetOrder } from '../../redux/orderRedux';
 
 const Checkout = () => {
     const { selectedSeats, ShowtimeInfoOrder, ShowtimeInfoDisplay, orderFoods } = useSelector(state => state.order);
@@ -78,6 +79,8 @@ const Checkout = () => {
         setShowAgeWarning(true);
     };
 
+    const dispatch = useDispatch();
+
     const proceedCheckout = async () => {
         try {
             const totalPrice = calculateTotalPrice();
@@ -106,6 +109,8 @@ const Checkout = () => {
             const payUrl = res.data.payUrl;
             window.location.href = payUrl;
 
+            dispatch(resetOrder());
+
         } catch (err) {
             console.error("Lỗi thanh toán:", err);
 
@@ -115,6 +120,8 @@ const Checkout = () => {
             } else {
                 toast.error("Có lỗi xảy ra khi tạo thanh toán. Vui lòng thử lại!");
             }
+
+            dispatch(resetOrder());
         }
     };
     
