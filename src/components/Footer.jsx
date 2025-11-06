@@ -31,7 +31,7 @@ const Footer = () => {
                                 <p className="mb-0">Rạp phim: <span className="text-white"> 09:00 - 01:00 </span></p>
                                 <p className="mb-0">Tổng đài: <span className="text-white"> 09:00 - 20:00 </span></p>
                                 <h4 className="my-4 text-white">Trụ sở chính</h4>
-                                <p className="mb-0"><i className="fas fa-map-marker-alt text-secondary me-2"></i> VTC Academy</p>
+                                <p className="mb-0"><i className="fas fa-map-marker-alt text-secondary me-2"></i> CINECORN</p>
                             </div>
                         </div>
                         <div className="col-md-6 col-lg-6 col-xl-3">
@@ -56,8 +56,8 @@ const Footer = () => {
                         <span class="text-light">
                             <a href="/" className='text-decoration-none'>
                                 <i class="fas fa-copyright text-light me-2"></i>
-                                <span class="text-light"><span style={{ color: '#eb5ca2' }}>CINEMA</span> from </span>
-                                VTC Academy </a>
+                                <span class="text-light">cinema from </span>
+                                <span style={{ color: '#eb5ca2' }}>CINECORN</span> </a>
                         </span>
                     </div>
                 </div>

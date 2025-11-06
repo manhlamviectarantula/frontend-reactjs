@@ -19,6 +19,7 @@ const ManageTheater = () => {
     const [Theaters, setTheaters] = useState([]);
     const [showEditModal, setShowEditModal] = useState(false)
     const [seatDataModal, setSeatDataModal] = useState(false)
+    const [updatePositionModal, setUpdatePositionModal] = useState(false)
     const [DetailsTheater, setDetailsTheater] = useState(null)
     const [seatingData, setSeatingData] = useState({ rows: [], maxColumn: 0, maxRow: 0 });
 
@@ -30,9 +31,16 @@ const ManageTheater = () => {
         TheaterType: '',
         MaxRow: '',
         MaxColumn: '',
+        SeatsPrice: 0,
         CreatedBy: isBranchAdmin.Email || '',
         LastUpdatedBy: isBranchAdmin.Email || ''
     });
+
+    const [updateSeatInfo, setUpdateSeatInfo] = useState({
+        MaxRow: '',
+        MaxColumn: '',
+        LastUpdatedBy: isBranchAdmin.Email || ''
+    })
 
     const [editTheaterInfo, setEditTheaterInfo] = useState(null);
 
@@ -56,9 +64,13 @@ const ManageTheater = () => {
     }, [isBranchAdmin.BranchID, token]);
 
     const [showDesignSeats, setshowDesignSeats] = useState(false)
+    const [showDesignUpdateSeatsPosition, setshowDesignUpdateSeatsPosition] = useState(false)
     const [insertSeatsData, setInsertSeatsData] = useState([]);
     const maxRow = parseInt(theaterInfo?.MaxRow || 0, 10);
+    const maxRowUpdate = parseInt(updateSeatInfo?.MaxRow || 0, 10);
     const rowNames = Array.from({ length: maxRow }, (_, i) => String.fromCharCode(65 + (maxRow - i - 1)));
+    const rowNamesUpdate = Array.from({ length: maxRowUpdate }, (_, i) => String.fromCharCode(65 + (maxRowUpdate - i - 1)));
+
 
     const ShowDetailsTheater = (TheaterID) => {
         const getDetailsTheater = async () => {
@@ -167,6 +179,7 @@ const ManageTheater = () => {
             !theaterInfo.TheaterType ||
             !theaterInfo.MaxRow ||
             !theaterInfo.MaxColumn ||
+            !theaterInfo.SeatsPrice ||
             !theaterInfo.CreatedBy ||
             !theaterInfo.LastUpdatedBy
         ) {
@@ -196,6 +209,42 @@ const ManageTheater = () => {
 
             setshowDesignSeats(true)
             setshowAddTheaterModal(false)
+            setInsertSeatsData(seats);
+        }
+    }
+
+    const toUpdateSeatsPosiston = () => {
+        if (
+            !updateSeatInfo.MaxRow ||
+            !updateSeatInfo.MaxColumn ||
+            !updateSeatInfo.LastUpdatedBy
+        ) {
+            toast.error("Vui lòng nhập đầy đủ thông tin!");
+            return;
+        }
+
+        if (updateSeatInfo?.MaxRow && updateSeatInfo?.MaxColumn) {
+            const maxRow = parseInt(updateSeatInfo.MaxRow, 10);
+            const maxColumn = parseInt(updateSeatInfo.MaxColumn, 10);
+            let seats = [];
+
+            for (let row = 0; row < maxRow; row++) {
+                let rowName = String.fromCharCode(65 + (maxRow - row - 1));
+
+                for (let col = 0; col < maxColumn; col++) {
+                    seats.push({
+                        SeatNumber: maxColumn - col,
+                        Row: row,  // Chỉ lưu chỉ số hàng, chưa có RowID
+                        RowName: rowName,
+                        Column: col,
+                        Area: 1,
+                        Description: "Standard"
+                    });
+                }
+            }
+
+            setshowDesignUpdateSeatsPosition(true)
+            setUpdatePositionModal(false)
             setInsertSeatsData(seats);
         }
     }
@@ -235,6 +284,23 @@ const ManageTheater = () => {
 
     const generateRows = async (theaterID) => {
         const maxRow = parseInt(theaterInfo.MaxRow, 10);
+        const rows = Array.from({ length: maxRow }, (_, i) => ({
+            TheaterID: theaterID,
+            RowName: String.fromCharCode(65 + i)
+        }));
+
+        const rowsResponse = await axios.post(`${process.env.REACT_APP_API}/row/add-rows`, rows,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+        return rowsResponse.data.data;
+    };
+
+    const generateRowsUpdatePosition = async (theaterID) => {
+        const maxRow = parseInt(updateSeatInfo.MaxRow, 10);
         const rows = Array.from({ length: maxRow }, (_, i) => ({
             TheaterID: theaterID,
             RowName: String.fromCharCode(65 + i)
@@ -309,6 +375,7 @@ const ManageTheater = () => {
                 TheaterType: '',
                 MaxRow: '',
                 MaxColumn: '',
+                SeatsPrice: 0,
                 CreatedBy: isBranchAdmin.Email || '',
                 LastUpdatedBy: isBranchAdmin.Email || ''
             });
@@ -318,6 +385,81 @@ const ManageTheater = () => {
             alert("Đã xảy ra lỗi, vui lòng thử lại!");
         }
     };
+
+    const updateSeatsPosition = async () => {
+        try {
+            await axios.put(
+                `${process.env.REACT_APP_API}/theater/update-col-row/${DetailsTheater?.TheaterID}`,
+                updateSeatInfo,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            await axios.put(`${process.env.REACT_APP_API}/theater/delete-rows-and-seats/${DetailsTheater?.TheaterID}`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            // Tạo hàng ghế và lấy danh sách RowID
+            const rowsData = await generateRowsUpdatePosition(DetailsTheater?.TheaterID);
+
+            // Cập nhật danh sách ghế với RowID từ rowsData
+            const updatedSeats = insertSeatsData.map(seat => {
+                const matchingRow = rowsData.find(row => row.RowName === seat.RowName);
+                return matchingRow ? { ...seat, RowID: matchingRow.RowID } : seat;
+            });
+
+            setInsertSeatsData(updatedSeats); // Lưu danh sách ghế đã cập nhật RowID
+
+            // Gửi request tạo ghế
+            const seatsResponse = await axios.post(`${process.env.REACT_APP_API}/seat/add-seats`, updatedSeats,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            console.log("Seats Created:", seatsResponse.data);
+
+            // alert("Rạp chiếu, hàng ghế và ghế đã được tạo thành công!");
+            toast.success("Sửa vị trí ghế thành công!");
+            setshowDesignUpdateSeatsPosition(false)
+            if (!isBranchAdmin.BranchID) return;
+            const getTheaters = async () => {
+                try {
+                    const response = await axios.get(`${process.env.REACT_APP_API}/theater/get-all-theater-of-branch/${isBranchAdmin.BranchID}`,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+                        }
+                    );
+                    setTheaters(response.data.data || []);
+                } catch (error) {
+                    console.error('Lỗi khi lấy danh sách rạp:', error);
+                }
+            };
+            getTheaters();
+            setUpdateSeatInfo({
+                MaxRow: '',
+                MaxColumn: '',
+                LastUpdatedBy: isBranchAdmin.Email || ''
+            });
+
+
+        } catch (error) {
+            console.error("Lỗi khi tạo rạp chiếu:", error);
+            alert("Đã xảy ra lỗi, vui lòng thử lại!");
+        }
+    }
 
     const handleChangeStatus = async (e, Theater) => {
         e.preventDefault();
@@ -438,7 +580,7 @@ const ManageTheater = () => {
             {/* Modal SeatsData */}
             <Modal show={seatDataModal} onHide={() => setSeatDataModal(false)} centered size="xl">
                 <Modal.Header closeButton>
-                    <Modal.Title>Vị trí ghế ngồi:</Modal.Title>
+                    <Modal.Title>Vị trí ghế ngồi - {DetailsTheater?.TheaterName}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
@@ -472,9 +614,17 @@ const ManageTheater = () => {
                         <div className='border border-2 border-secondary'></div>
                     </div>
 
-                    <Button onClick={toDesignSeats} variant="dark" className="mt-2 w-100">
+                    <Button
+                        onClick={() => {
+                            setUpdatePositionModal(true);
+                            setSeatDataModal(false);
+                        }}
+                        variant="dark"
+                        className="mt-2 w-100"
+                    >
                         Sửa vị trí ghế
                     </Button>
+
                 </Modal.Body>
             </Modal>
 
@@ -517,6 +667,25 @@ const ManageTheater = () => {
                                     <option value="3D">3D</option>
                                     <option value="IMAX">IMAX</option>
                                 </Form.Select>
+                            </Form.Group>
+
+                            <Form.Group className="mb-3">
+                                <Form.Label><strong>Giá ghế:</strong></Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="SeatsPrice"
+                                    value={editTheaterInfo.SeatsPrice?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") || ""}
+                                    onChange={(e) => {
+                                        // Loại bỏ mọi ký tự không phải số
+                                        const rawValue = e.target.value.replace(/\D/g, "");
+
+                                        // Cập nhật state với giá trị dạng số nguyên
+                                        setEditTheaterInfo({
+                                            ...editTheaterInfo,
+                                            SeatsPrice: Number(rawValue)
+                                        });
+                                    }}
+                                />
                             </Form.Group>
 
                             {/* Slug */}
@@ -607,6 +776,25 @@ const ManageTheater = () => {
                                 <option value="3D">3D</option>
                                 <option value="IMAX">IMAX</option>
                             </Form.Select>
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label><strong>Giá ghế:</strong></Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="SeatsPrice"
+                                value={theaterInfo.SeatsPrice?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") || ""}
+                                onChange={(e) => {
+                                    // Loại bỏ mọi ký tự không phải số
+                                    const rawValue = e.target.value.replace(/\D/g, "");
+
+                                    // Cập nhật state với giá trị dạng số nguyên
+                                    setTheaterInfo({
+                                        ...theaterInfo,
+                                        SeatsPrice: Number(rawValue)
+                                    });
+                                }}
+                            />
                         </Form.Group>
 
                         <Form.Group className="mb-3">
@@ -731,31 +919,69 @@ const ManageTheater = () => {
                 </Modal.Body>
             </Modal>
 
-            {/* Modal Update Seat */}
-            <Modal show={showDesignSeats} onHide={() => setshowDesignSeats(false)} centered size="xl">
+            {/* Update Seats Posiston  */}
+            <Modal show={updatePositionModal} onHide={() => setUpdatePositionModal(false)} centered size="xl">
                 <Modal.Header closeButton>
-                    <Modal.Title>Sửa vị trí ghế:</Modal.Title>
+                    <Modal.Title>Sửa vị trí ghế - {DetailsTheater?.TheaterName}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form.Group className="mb-3">
+                        <Form.Label><strong>Số hàng ghế:</strong></Form.Label>
+                        <Form.Control
+                            type="number"
+                            name="MaxRow"
+                            value={updateSeatInfo.MaxRow}
+                            onChange={(e) => setUpdateSeatInfo({
+                                ...updateSeatInfo,
+                                MaxRow: parseInt(e.target.value, 10) || '' // Ép kiểu thành số nguyên, nếu rỗng thì về 0
+                            })}
+                        />
+                    </Form.Group>
+
+                    <Form.Group className="mb-3">
+                        <Form.Label><strong>Số cột ghế:</strong></Form.Label>
+                        <Form.Control
+                            type="number"
+                            name="MaxColumn"
+                            value={updateSeatInfo.MaxColumn}
+                            onChange={(e) => setUpdateSeatInfo({
+                                ...updateSeatInfo,
+                                MaxColumn: parseInt(e.target.value, 10) || '' // Ép kiểu thành số nguyên, nếu rỗng thì về 0
+                            })}
+                        />
+                    </Form.Group>
+
+                    <Button onClick={toUpdateSeatsPosiston} variant="dark" className="w-100">
+                        Tiếp tục
+                    </Button>
+                </Modal.Body>
+            </Modal>
+
+            {/* Modal Design Update Seat Position */}
+            <Modal show={showDesignUpdateSeatsPosition} onHide={() => setshowDesignUpdateSeatsPosition(false)} centered size="xl">
+                <Modal.Header closeButton>
+                    <Modal.Title>Sửa vị trí ghế - {DetailsTheater?.TheaterName}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <>
                         <div className="py-3 d-flex justify-content-between align-items-center">
                             <Button
-                                onClick={() => { setshowDesignSeats(false); setshowAddTheaterModal(true) }}
+                                onClick={() => { setshowDesignUpdateSeatsPosition(false); setUpdatePositionModal(true) }}
                                 variant="dark"
                             >
                                 Quay lại
                             </Button>
                             <Button
                                 variant='secondary'
-                                onClick={() => createTheaterAndSeats()}
+                                onClick={() => updateSeatsPosition()}
                             >
-                                Tạo rạp chiếu
+                                Sửa vị trí ghế
                             </Button>
                         </div>
                         <div style={{ background: '#eeeeee', borderRadius: '4px', padding: '30px' }}>
-                            {rowNames.map((rowName, rowIndex) => {
+                            {rowNamesUpdate.map((rowName, rowIndex) => {
                                 // Tạo danh sách chỗ ngồi của hàng hiện tại
-                                const seatColumnMap = Array.from({ length: parseInt(theaterInfo.MaxColumn, 10) }).fill(null);
+                                const seatColumnMap = Array.from({ length: parseInt(updateSeatInfo.MaxColumn, 10) }).fill(null);
 
                                 insertSeatsData
                                     .filter(seat => seat.Row === rowIndex)
@@ -765,10 +991,8 @@ const ManageTheater = () => {
 
                                 return (
                                     <div key={rowIndex} className="d-flex justify-content-between align-items-center mb-2">
-                                        {/* Tên hàng bên trái */}
                                         <div style={{ width: "30px", textAlign: "center" }}>{rowName}</div>
 
-                                        {/* Dãy ghế */}
                                         <div className="d-flex">
                                             {seatColumnMap.map((seat, columnIndex) => (
                                                 <Button
@@ -780,7 +1004,7 @@ const ManageTheater = () => {
                                                             Column: columnIndex,
                                                             RowName: rowName,
                                                             Area: 1,
-                                                            SeatNumber: parseInt(theaterInfo.MaxColumn, 10) - columnIndex
+                                                            SeatNumber: parseInt(updateSeatInfo.MaxColumn, 10) - columnIndex
                                                         };
                                                         handleSeatClickDesign(seatData)
                                                     }}
@@ -797,7 +1021,6 @@ const ManageTheater = () => {
                                             ))}
                                         </div>
 
-                                        {/* Tên hàng bên phải */}
                                         <div style={{ width: "30px", textAlign: "center" }}>{rowName}</div>
                                     </div>
                                 );

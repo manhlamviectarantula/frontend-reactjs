@@ -44,7 +44,7 @@ export default function FoodDrawer() {
         if (!selectedFood || !fromDate || !toDate) return;
 
         try {
-            const res = await axios.get(`${process.env.REACT_APP_API}/adminDashboard/get-food-overall/${user.BranchID}`,
+            const res = await axios.get(`${process.env.REACT_APP_API}/adminDashboard/get-food-overall/${user.user.BranchID}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
